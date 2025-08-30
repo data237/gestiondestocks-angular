@@ -1,0 +1,66 @@
+<div class="col">
+  <div class="row m-3">
+    <div class="col-md-8 p-0">
+      <h1>Liste des categories</h1>
+    </div>
+    <div class="col-md-4 text-end">
+      <app-boutton-action
+        (clickEvent)="nouvelCategory()"
+      ></app-boutton-action>
+    </div>
+  </div>
+  <div class="col m-3">
+    <div class="row col-md-12 alert alert-danger" *ngIf="errorMsg">
+      {{errorMsg}}
+    </div>
+   <div class="row custom-border mb-3 p-3" *ngFor="let cat of listCategories">
+     <div class="col-md-3 custom-border-right">
+       {{cat.code}}
+     </div>
+     <div class="col-md-4 custom-border-right">
+       {{cat.designation}}
+     </div>
+     <div class="col-md-3">
+       <div class="row">
+         <div class="col-md-4">
+           <button type="button" class="btn btn-link" (click)="modifierCategory(cat.id)">
+             <i class="fas fa-pencil-alt"></i>&nbsp;Modifier</button>
+         </div>
+         <div class="col-md-4">
+           <button type="button" class="btn btn-link text-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteCat" (click)="selectCategoriePourSupprimer(cat.id)">
+             <i class="fas fa-trash-alt"></i>&nbsp;Supprimer</button>
+         </div>
+         <div class="col-md-4">
+           <button type="button" class="btn btn-link">
+             <i class="fas fa-list-alt"></i>&nbsp;Detail</button>
+         </div>
+       </div>
+     </div>
+   </div>
+  </div>
+  <div class="row mb-3" *ngIf="listCategories.length > 0">
+    <div class="col-md-12 text-center ">
+      <app-pagination></app-pagination>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalDeleteCat" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirmation</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Etes vous sur de vouloir supprimer cette categorie
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="annulerSuppressionCat()">
+          <i class="fas fa-ban"></i>&nbsp;Annuler</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="confirmerEtSupprimerCat()">
+          <i class="fas fa-trash-alt"></i>&nbsp;Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
