@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {CategorieResponseDto} from '../../../../gs-api/src';
 import {Category} from '../../../services/category/category';
 import {NgForOf, NgIf} from '@angular/common';
+import {ModalConfirmation} from '../../../composants/modal-confirmation/modal-confirmation';
 
 @Component({
   selector: 'app-page-categories',
@@ -12,7 +13,8 @@ import {NgForOf, NgIf} from '@angular/common';
     BouttonAction,
     Pagination,
     NgForOf,
-    NgIf
+    NgIf,
+    ModalConfirmation
   ],
   templateUrl: './page-categories.html',
   styleUrl: './page-categories.css'
@@ -23,6 +25,8 @@ export class PageCategories {
   selectedCatIdToDelete: number | undefined =-1
   errorMsg =''
   categoryResponseDto: CategorieResponseDto={}
+  showDeleteModal = false
+  categoryToDelete: CategorieResponseDto | null = null
   constructor(
     private router: Router,
     private categoryService: Category
@@ -49,24 +53,46 @@ export class PageCategories {
     this.router.navigate(['nouvellecategorie', id])
   }
 
-  confirmerEtSupprimerCat():void {
-      if(this.selectedCatIdToDelete !== -1 && this.selectedCatIdToDelete !== undefined){
-        this.categoryService.delete(this.selectedCatIdToDelete)
-          .subscribe({
-            next: (res) => {
-              this.findAllCategories()
-            }, error: (error)=>{
-              this.errorMsg = error.error.errors
-              }
-          })
+  supprimerCategorie(id: number | undefined): void {
+    if (id) {
+      const category = this.listCategories.find(c => c.id === id);
+      if (category) {
+        this.categoryToDelete = category;
+        this.showDeleteModal = true;
       }
+    }
+  }
+
+  confirmerSuppression(): void {
+    if (this.categoryToDelete?.id) {
+      this.categoryService.delete(this.categoryToDelete.id)
+        .subscribe({
+          next: () => {
+            this.findAllCategories();
+            this.fermerModal();
+          },
+          error: (err: any) => {
+            this.errorMsg = err.error.message;
+            this.fermerModal();
+          }
+        });
+    }
+  }
+
+  fermerModal(): void {
+    this.showDeleteModal = false;
+    this.categoryToDelete = null;
+  }
+
+  getDeleteMessage(): string {
+    return `Êtes-vous sûr de vouloir supprimer la catégorie "${this.categoryToDelete?.designation || ''}" ?`;
   }
 
   annulerSuppressionCat(): void {
     this.selectedCatIdToDelete = -1
   }
 
-  supprimerCategory(id?: number | undefined): void {
+  selectCategoriePourSupprimer(id?: number | undefined): void {
       this.selectedCatIdToDelete = id
   }
 

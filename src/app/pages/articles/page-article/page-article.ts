@@ -5,6 +5,7 @@ import {Router} from '@angular/router'
 import {NgForOf, NgIf, CurrencyPipe} from '@angular/common';
 import {ArticleResponseDto} from '../../../../gs-api/src';
 import {Article} from '../../../services/article/article';
+import {ModalConfirmation} from '../../../composants/modal-confirmation/modal-confirmation';
 @Component({
   selector: 'app-page-article',
   imports: [
@@ -12,7 +13,8 @@ import {Article} from '../../../services/article/article';
     BouttonAction,
     NgForOf,
     NgIf,
-    CurrencyPipe
+    CurrencyPipe,
+    ModalConfirmation
   ],
   templateUrl: './page-article.html',
   styleUrl: './page-article.css'
@@ -20,6 +22,9 @@ import {Article} from '../../../services/article/article';
 export class PageArticle {
   listArticle: Array<ArticleResponseDto>=[];
   errorMsg = ''
+  showDeleteModal = false;
+  articleToDelete: ArticleResponseDto | null = null;
+  
   constructor(
     private router: Router,
     private articleService :Article
@@ -56,21 +61,37 @@ export class PageArticle {
   }
 
   supprimerArticle(article: ArticleResponseDto): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
-      this.articleService.deleteArticle(article.id!)
+    this.articleToDelete = article;
+    this.showDeleteModal = true;
+  }
+
+  confirmerSuppression(): void {
+    if (this.articleToDelete?.id) {
+      this.articleService.deleteArticle(this.articleToDelete.id)
         .subscribe({
           next: () => {
             this.findListArticle();
+            this.showDeleteModal = false;
+            this.articleToDelete = null;
           },
           error: (error) => {
             this.errorMsg = 'Erreur lors de la suppression';
+            this.showDeleteModal = false;
           }
         });
     }
   }
 
+  annulerSuppression(): void {
+    this.showDeleteModal = false;
+    this.articleToDelete = null;
+  }
+
+  getDeleteMessage(): string {
+    return `Êtes-vous sûr de vouloir supprimer l'article "${this.articleToDelete?.designation || ''}" ?`;
+  }
+
   voirDetails(article: ArticleResponseDto): void {
-    // Implement view details logic
-    console.log('Voir détails:', article);
+    this.router.navigate(['articles', 'detail', article.id]);
   }
 }

@@ -26,7 +26,7 @@
               <button class="btn-action btn-edit" (click)="modifierCategory(cat.id)">
                 <i class="fas fa-edit"></i>
               </button>
-              <button class="btn-action btn-delete" (click)="supprimerCategory(cat.id)" data-bs-toggle="modal" data-bs-target="#modalDeleteCat">
+              <button class="btn-action btn-delete" (click)="supprimerCategorie(cat.id)">
                 <i class="fas fa-trash"></i>
               </button>
               <button class="btn-action btn-view" (click)="voirDetails(cat)">
@@ -44,22 +44,9 @@
   </div>
 </div>
 
-<div class="modal fade" id="modalDeleteCat" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirmation</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Etes vous sur de vouloir supprimer cette categorie
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="annulerSuppressionCat()">
-          <i class="fas fa-ban"></i>&nbsp;Annuler</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="confirmerEtSupprimerCat()">
-          <i class="fas fa-trash-alt"></i>&nbsp;Supprimer</button>
-      </div>
-    </div>
-  </div>
-</div>
+<app-modal-confirmation 
+  [isVisible]="showDeleteModal"
+  [message]="getDeleteMessage()"
+  (confirm)="confirmerSuppression()"
+  (cancel)="fermerModal()">
+</app-modal-confirmation>

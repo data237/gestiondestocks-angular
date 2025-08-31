@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import {BouttonAction} from "../../../composants/boutton-action/boutton-action";
 import {Pagination} from "../../../composants/pagination/pagination";
 import {Router} from '@angular/router';
-import {Cltfrs} from '../../../services/cltfrs/cltfrs';
 import {ClientResponseDto} from '../../../../gs-api/src';
+import {Cltfrs} from '../../../services/cltfrs/cltfrs';
 import {NgForOf, NgIf} from '@angular/common';
+import {ModalConfirmation} from '../../../composants/modal-confirmation/modal-confirmation';
 
 @Component({
   selector: 'app-page-client',
@@ -12,7 +13,8 @@ import {NgForOf, NgIf} from '@angular/common';
     BouttonAction,
     Pagination,
     NgForOf,
-    NgIf
+    NgIf,
+    ModalConfirmation
   ],
   templateUrl: './page-client.html',
   styleUrl: './page-client.css'
@@ -20,6 +22,8 @@ import {NgForOf, NgIf} from '@angular/common';
 export class PageClient {
   listclient: Array<ClientResponseDto>=[];
  errorMsg= '';
+  showDeleteModal = false;
+  clientToDelete: ClientResponseDto | null = null;
   constructor(
     private router: Router,
     private cltFrsService : Cltfrs
@@ -55,17 +59,33 @@ export class PageClient {
   }
 
   supprimerClient(client: ClientResponseDto): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
-      this.cltFrsService.deleteClient(client.id!)
+    this.clientToDelete = client;
+    this.showDeleteModal = true;
+  }
+
+  confirmerSuppression(): void {
+    if (this.clientToDelete?.id) {
+      this.cltFrsService.deleteClient(this.clientToDelete.id)
         .subscribe({
           next: () => {
             this.findAllClient();
+            this.fermerModal();
           },
-          error: (error) => {
+          error: (error: any) => {
             this.errorMsg = 'Erreur lors de la suppression';
+            this.fermerModal();
           }
         });
     }
+  }
+
+  fermerModal(): void {
+    this.showDeleteModal = false;
+    this.clientToDelete = null;
+  }
+
+  getDeleteMessage(): string {
+    return `Êtes-vous sûr de vouloir supprimer le client "${this.clientToDelete?.nom || ''} ${this.clientToDelete?.prenom || ''}" ?`;
   }
 
   voirDetails(client: ClientResponseDto): void {

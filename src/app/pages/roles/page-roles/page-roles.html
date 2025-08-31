@@ -33,7 +33,7 @@
               <button class="btn-action btn-edit" (click)="modifierRole(role.id)">
                 <i class="fas fa-edit"></i>
               </button>
-              <button class="btn-action btn-delete" (click)="supprimerRole(role.id)">
+              <button class="btn-action btn-delete" (click)="supprimerRole(role)">
                 <i class="fas fa-trash"></i>
               </button>
               <button class="btn-action btn-view" (click)="voirDetails(role)">
@@ -54,3 +54,10 @@
     </div>
   </div>
 </div>
+
+<app-modal-confirmation 
+  [isVisible]="showDeleteModal"
+  [message]="getDeleteMessage()"
+  (confirm)="confirmerSuppression()"
+  (cancel)="fermerModal()">
+</app-modal-confirmation>

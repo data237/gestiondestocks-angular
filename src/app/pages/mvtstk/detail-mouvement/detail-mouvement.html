@@ -1,0 +1,110 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Détails du mouvement</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="retour()">
+        <i class="fas fa-arrow-left"></i> Retour
+      </button>
+      <button class="btn btn-primary" (click)="modifier()" *ngIf="mouvement">
+        <i class="fas fa-edit"></i> Modifier
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="errorMsg">
+    {{ errorMsg }}
+  </div>
+
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Chargement des détails...</p>
+    </div>
+  </div>
+
+  <div class="detail-container" *ngIf="!isLoading && mouvement">
+    <div class="detail-card">
+      <div class="card-header">
+        <h3>Informations générales</h3>
+        <span class="badge" [ngClass]="getTypeMouvementClass(mouvement.typeMvt || '')">
+          {{ getTypeMouvementLabel(mouvement.typeMvt || '') }}
+        </span>
+      </div>
+      
+      <div class="card-body">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="label">ID du mouvement</div>
+            <span class="value">#{{ mouvement.id }}</span>
+          </div>
+          
+          <div class="info-item">
+            <div class="label">Date du mouvement:</div>
+            <span>{{ mouvement.dateMvt | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-item">
+            <div class="label">Type:</div>
+            <span [class]="getBadgeClass(mouvement.typeMvt || '')">{{ getTypeLabel(mouvement.typeMvt || '') }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <div class="label">Quantité</div>
+            <span class="value quantity">{{ mouvement.quantite }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <div class="label">Entreprise ID</div>
+            <span class="value">{{ mouvement.entrepriseId || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-card">
+      <div class="card-header">
+        <h3>Informations article</h3>
+      </div>
+      
+      <div class="card-body">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="label">Désignation</div>
+            <span class="value">{{ mouvement.article?.designation || 'N/A' }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <div class="label">Code article</div>
+            <span class="value">{{ mouvement.article?.codeArticle || 'N/A' }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="mouvement.article?.prixUnitaire">
+            <div class="label">Prix unitaire HT</div>
+            <span class="value price">{{ mouvement.article?.prixUnitaire | currency:'EUR':'symbol':'1.2-2' }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="mouvement.article?.prixUnitaireTtc">
+            <div class="label">Prix unitaire TTC</div>
+            <span class="value price">{{ mouvement.article?.prixUnitaireTtc | currency:'EUR':'symbol':'1.2-2' }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="mouvement.article?.prixUnitaire && mouvement.quantite">
+            <div class="label">Valeur totale HT</div>
+            <span class="value price total">
+              {{ ((mouvement.quantite || 0) * (mouvement.article?.prixUnitaire || 0)) | currency:'EUR':'symbol':'1.2-2' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="not-found" *ngIf="!isLoading && !mouvement">
+    <i class="fas fa-exclamation-triangle"></i>
+    <h3>Mouvement non trouvé</h3>
+    <p>Le mouvement demandé n'existe pas ou n'est plus disponible.</p>
+    <button class="btn btn-primary" (click)="retour()">
+      <i class="fas fa-arrow-left"></i> Retour à la liste
+    </button>
+  </div>
+</div>

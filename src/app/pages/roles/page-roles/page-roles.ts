@@ -5,10 +5,11 @@ import { RolesService } from '../../../services/roles/roles.service';
 import { RolesResponseDto } from '../../../../gs-api/src';
 import { BouttonAction } from '../../../composants/boutton-action/boutton-action';
 import { Pagination } from '../../../composants/pagination/pagination';
+import { ModalConfirmation } from '../../../composants/modal-confirmation/modal-confirmation';
 
 @Component({
   selector: 'app-page-roles',
-  imports: [CommonModule, BouttonAction, Pagination],
+  imports: [CommonModule, BouttonAction, Pagination, ModalConfirmation],
   templateUrl: './page-roles.html',
   styleUrl: './page-roles.css'
 })
@@ -17,6 +18,8 @@ export class PageRoles implements OnInit {
   roles: RolesResponseDto[] = [];
   isLoading = false;
   errorMessage = '';
+  showDeleteModal = false;
+  roleToDelete: RolesResponseDto | null = null;
 
   constructor(
     private readonly router: Router,
@@ -52,27 +55,44 @@ export class PageRoles implements OnInit {
   }
 
   deleteRole(id: number): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce rôle ?')) {
-      this.rolesService.deleteRole(id).subscribe({
-        next: () => {
-          this.loadRoles();
-        },
-        error: (error) => {
-          console.error('Erreur lors de la suppression:', error);
-          alert('Erreur lors de la suppression du rôle');
-        }
-      });
-    }
+    this.rolesService.deleteRole(id).subscribe({
+      next: () => {
+        this.loadRoles();
+        this.fermerModal();
+      },
+      error: (error) => {
+        console.error('Erreur lors de la suppression:', error);
+        this.errorMessage = 'Erreur lors de la suppression du rôle';
+        this.fermerModal();
+      }
+    });
   }
 
   modifierRole(id?: number): void {
     this.router.navigate(['nouveaurole', id]);
   }
 
-  supprimerRole(id?: number): void {
-    if (id) {
-      this.deleteRole(id);
+  supprimerRole(role: RolesResponseDto): void {
+    this.roleToDelete = role;
+    this.showDeleteModal = true;
+  }
+
+  confirmerSuppression(): void {
+    if (this.roleToDelete && this.roleToDelete.id) {
+      this.deleteRole(this.roleToDelete.id);
     }
+  }
+
+  fermerModal(): void {
+    this.showDeleteModal = false;
+    this.roleToDelete = null;
+  }
+
+  getDeleteMessage(): string {
+    if (this.roleToDelete) {
+      return `Êtes-vous sûr de vouloir supprimer le rôle "${this.roleToDelete.roleName}" ?`;
+    }
+    return 'Êtes-vous sûr de vouloir supprimer ce rôle ?';
   }
 
   voirDetails(role: RolesResponseDto): void {

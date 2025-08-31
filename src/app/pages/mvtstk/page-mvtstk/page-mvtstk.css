@@ -117,6 +117,24 @@
   transition: all 0.2s ease;
 }
 
+.btn-edit {
+  background: #007bff;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #0056b3;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #c82333;
+}
+
 .btn-view {
   background: #28a745;
   color: white;

@@ -32,65 +32,7 @@
   padding: 20px;
   height: calc(100vh - 200px);
   background: #f8f9fa;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Page Content Area */
-.page-content {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Data Table Container */
-.data-table-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.table-wrapper {
-  flex: 1;
-  overflow: hidden;
-}
-
-.data-table {
-  width: 100%;
-  height: 100%;
-  display: block;
-  overflow: hidden;
-}
-
-.data-table thead,
-.data-table tbody {
-  display: block;
-}
-
-.data-table thead {
-  width: 100%;
-}
-
-.data-table tbody {
-  height: calc(100vh - 350px);
-  overflow: hidden;
-}
-
-.data-table tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-/* Table Footer with Pagination */
-.table-footer {
-  padding: 15px 0;
-  border-top: 1px solid #dee2e6;
-  background: white;
-  flex-shrink: 0;
+  overflow-y: auto;
 }
 
 /* Sidebar Styling */
@@ -137,12 +79,13 @@
 
 @media (max-width: 1024px) {
   .main-contener {
-    margin: 20px;
     padding: 15px;
+    overflow-y: auto;
   }
   
   .row.min-height-600 {
     flex-direction: column;
+    height: auto;
   }
   
   .card.col-md-2 {
@@ -154,19 +97,22 @@
     padding-left: 0 !important;
   }
   
-  .data-table tbody {
-    height: calc(100vh - 400px);
+  .content-wrapper {
+    height: auto;
+    max-height: 60vh;
   }
 }
 
 @media (max-width: 768px) {
   .main-contener {
-    margin: 10px;
     padding: 10px;
+    overflow-y: auto;
   }
   
   .content-wrapper {
     padding: 15px;
+    height: auto;
+    max-height: 50vh;
   }
   
   .footer-content {

@@ -22,6 +22,9 @@ import {PageRoles} from './pages/roles/page-roles/page-roles';
 import {NouveauRole} from './pages/roles/nouveau-role/nouveau-role';
 import {DashboardOverview} from './pages/dashboard-overview/dashboard-overview';
 import {ApplicationGuard} from './services/guard/application-guard';
+import {DetailArticle} from './pages/articles/detail-article/detail-article';
+import {NouveauMouvement} from './pages/mvtstk/nouveau-mouvement/nouveau-mouvement';
+import {DetailMouvement} from './pages/mvtstk/detail-mouvement/detail-mouvement';
 export const routes: Routes = [
   {
     path: 'login',
@@ -62,8 +65,28 @@ export const routes: Routes = [
         canActivate: [ApplicationGuard]
       },
       {
+        path: 'articles/detail/:id',
+        component: DetailArticle,
+        canActivate: [ApplicationGuard]
+      },
+      {
         path: 'mvtstk',
         component: PageMvtstk,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'nouveaumouvement',
+        component: NouveauMouvement,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'nouveaumouvement/:id',
+        component: NouveauMouvement,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'detailmouvement/:id',
+        component: DetailMouvement,
         canActivate: [ApplicationGuard]
       },
       {
@@ -175,6 +198,32 @@ export const routes: Routes = [
         path: 'nouveaurole',
         component: NouveauRole,
         canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'nouveaurole/:id',
+        component: NouveauRole,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'nouvelutilisateur/:id',
+        component: NouvelUtilisateur,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'nouveauclient/:id',
+        component: NouveauCltFrs,
+        canActivate: [ApplicationGuard],
+        data: {
+          origin: 'client'
+        }
+      },
+      {
+        path: 'nouveaufournisseur/:id',
+        component: NouveauCltFrs,
+        canActivate: [ApplicationGuard],
+        data: {
+          origin: 'fournisseur'
+        }
       }
     ]
   }

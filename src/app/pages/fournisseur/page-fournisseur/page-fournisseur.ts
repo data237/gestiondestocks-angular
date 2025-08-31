@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import {BouttonAction} from "../../../composants/boutton-action/boutton-action";
 import {Pagination} from "../../../composants/pagination/pagination";
 import {Router} from '@angular/router';
-import {Cltfrs} from '../../../services/cltfrs/cltfrs';
 import {FournisseurResponseDto} from '../../../../gs-api/src';
+import {Cltfrs} from '../../../services/cltfrs/cltfrs';
 import {NgForOf, NgIf} from '@angular/common';
+import {ModalConfirmation} from '../../../composants/modal-confirmation/modal-confirmation';
 
 @Component({
   selector: 'app-page-fournisseur',
@@ -12,7 +13,8 @@ import {NgForOf, NgIf} from '@angular/common';
     BouttonAction,
     Pagination,
     NgForOf,
-    NgIf
+    NgIf,
+    ModalConfirmation
   ],
   templateUrl: './page-fournisseur.html',
   styleUrl: './page-fournisseur.css'
@@ -20,6 +22,8 @@ import {NgForOf, NgIf} from '@angular/common';
 export class PageFournisseur {
   listFournisseur: Array<FournisseurResponseDto>=[];
   errorMsg='';
+  showDeleteModal = false;
+  fournisseurToDelete: FournisseurResponseDto | null = null;
   constructor(
     private router: Router,
     private cltFrsService : Cltfrs
@@ -55,17 +59,36 @@ export class PageFournisseur {
   }
 
   supprimerFournisseur(fournisseur: FournisseurResponseDto): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce fournisseur ?')) {
-      this.cltFrsService.deleteFournisseur(fournisseur.id!)
+    this.fournisseurToDelete = fournisseur;
+    this.showDeleteModal = true;
+  }
+
+  confirmerSuppression(): void {
+    if (this.fournisseurToDelete) {
+      this.cltFrsService.deleteFournisseur(this.fournisseurToDelete.id!)
         .subscribe({
           next: () => {
             this.findAllFournisseurs();
+            this.fermerModal();
           },
           error: (error) => {
             this.errorMsg = 'Erreur lors de la suppression';
+            this.fermerModal();
           }
         });
     }
+  }
+
+  fermerModal(): void {
+    this.showDeleteModal = false;
+    this.fournisseurToDelete = null;
+  }
+
+  getDeleteMessage(): string {
+    if (this.fournisseurToDelete) {
+      return `Êtes-vous sûr de vouloir supprimer le fournisseur "${this.fournisseurToDelete.nom}" ?`;
+    }
+    return 'Êtes-vous sûr de vouloir supprimer ce fournisseur ?';
   }
 
   voirDetails(fournisseur: FournisseurResponseDto): void {

@@ -50,3 +50,10 @@
   </div>
 </div>
 
+<app-modal-confirmation 
+  [isVisible]="showDeleteModal"
+  [message]="getDeleteMessage()"
+  (confirm)="confirmerSuppression()"
+  (cancel)="fermerModal()">
+</app-modal-confirmation>
+

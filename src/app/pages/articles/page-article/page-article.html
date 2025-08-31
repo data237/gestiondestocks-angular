@@ -47,3 +47,11 @@
     </div>
   </div>
 </div>
+
+<!-- Modal de confirmation -->
+<app-modal-confirmation 
+  [isVisible]="showDeleteModal"
+  [message]="getDeleteMessage()"
+  (confirmed)="confirmerSuppression()"
+  (cancelled)="annulerSuppression()">
+</app-modal-confirmation>
