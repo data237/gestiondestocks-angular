@@ -1,0 +1,78 @@
+<div class="col m-3">
+  <div class="col-md-12 mb-3 text-center">
+    <img src="product.png" alt="" class="rounded-circle" width="200px">
+    <div class="mt-2">
+      <input type="file" class="form-control" accept="image/*" (change)="onImageSelected($event)" style="max-width: 300px; margin: 0 auto;">
+    </div>
+  </div>
+  
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    {{errorMessage}}
+  </div>
+  <div class="alert alert-success" *ngIf="successMessage">
+    {{successMessage}}
+  </div>
+
+  <div class="col-md-12 mb-3">
+    <div class="col-md-12 mb-3">
+      <h2><i class="fas fa-info-circle blue-color"></i>&nbsp;Information de l'utilisateur</h2>
+    </div>
+    <div class="col-md-12">
+      <form>
+        <div class="row mb-3">
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Nom" [(ngModel)]="utilisateur.nom" name="nom" required>
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Adresse 1" [(ngModel)]="utilisateur.adresse1" name="adresse1" required>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Prénom" [(ngModel)]="utilisateur.prenom" name="prenom" required>
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Adresse 2" [(ngModel)]="utilisateur.adresse2" name="adresse2">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <input type="email" class="form-control" placeholder="E-mail" [(ngModel)]="utilisateur.email" name="email" required>
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Ville" [(ngModel)]="utilisateur.ville" name="ville" required>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <input type="password" class="form-control" placeholder="Mot de passe" [(ngModel)]="utilisateur.motDePasse" name="motDePasse" required>
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Code postal" [(ngModel)]="utilisateur.codePostal" name="codePostal" required>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <input type="date" class="form-control" placeholder="Date de naissance" [(ngModel)]="utilisateur.dateDeNaissance" name="dateDeNaissance" required>
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Pays" [(ngModel)]="utilisateur.pays" name="pays" required>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-12 text-end">
+    <button class="btn btn-danger me-3" (click)="cancel()" [disabled]="isLoading">
+      <i class="fas fa-ban"></i>&nbsp;
+      Annuler
+    </button>
+    <button class="btn btn-primary" (click)="save()" [disabled]="isLoading">
+      <i class="fas fa-save" *ngIf="!isLoading"></i>
+      <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>&nbsp;
+      {{isLoading ? 'Enregistrement...' : 'Enregistrer'}}
+    </button>
+  </div>
+</div>
+
+

@@ -1,0 +1,57 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Liste des articles</h1>
+    <app-boutton-action (clickEvent)="nouvelArticle()"></app-boutton-action>
+  </div>
+  
+  <div class="alert alert-danger" *ngIf="errorMsg">
+    {{errorMsg}}
+  </div>
+
+  <div class="data-table-container">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Désignation</th>
+            <th>Catégorie</th>
+            <th>Prix Unitaire</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let article of listArticle" class="table-row">
+            <td>{{ article.codeArticle }}</td>
+            <td>{{ article.designation }}</td>
+            <td>{{ article.categorie?.designation || 'N/A' }}</td>
+            <td>{{ article.prixUnitaire | currency:'EUR':'symbol':'1.2-2' }}</td>
+            <td class="actions-cell">
+              <button class="btn-action btn-edit" (click)="modifierArticle(article)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-action btn-delete" (click)="supprimerArticle(article)">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button class="btn-action btn-view" (click)="voirDetails(article)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="table-footer">
+      <app-pagination></app-pagination>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmation -->
+<app-modal-confirmation 
+  [isVisible]="showDeleteModal"
+  [message]="getDeleteMessage()"
+  (confirmed)="confirmerSuppression()"
+  (cancelled)="annulerSuppression()">
+</app-modal-confirmation>

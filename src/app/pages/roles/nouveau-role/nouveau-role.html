@@ -1,0 +1,43 @@
+<div class="col m-3">
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    {{errorMessage}}
+  </div>
+  <div class="alert alert-success" *ngIf="successMessage">
+    {{successMessage}}
+  </div>
+
+  <div class="col-md-12 mb-3">
+    <div class="col-md-12 mb-3">
+      <h2><i class="fas fa-user-tag blue-color"></i>&nbsp;Information du rôle</h2>
+    </div>
+    <div class="col-md-12">
+      <form>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="roleName" class="form-label">Nom du rôle *</label>
+            <input 
+              type="text" 
+              id="roleName"
+              class="form-control" 
+              placeholder="Nom du rôle" 
+              [(ngModel)]="role.roleName" 
+              name="roleName" 
+              required>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div class="col-md-12 text-end">
+    <button class="btn btn-danger me-3" (click)="cancel()" [disabled]="isLoading">
+      <i class="fas fa-ban"></i>&nbsp;
+      Annuler
+    </button>
+    <button class="btn btn-primary" (click)="save()" [disabled]="isLoading">
+      <i class="fas fa-save" *ngIf="!isLoading"></i>
+      <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>&nbsp;
+      {{isLoading ? 'Enregistrement...' : 'Enregistrer'}}
+    </button>
+  </div>
+</div>

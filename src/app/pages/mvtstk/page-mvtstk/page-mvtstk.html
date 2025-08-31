@@ -1,0 +1,65 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Mouvements du stock</h1>
+    <app-boutton-action
+      [isImporterVisible]="false"
+      [isNouveauVisible]="false">
+    </app-boutton-action>
+  </div>
+
+  <div class="data-table-container">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Article</th>
+            <th>Type Mouvement</th>
+            <th>Quantité</th>
+            <th>Source/Destination</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mvt of listMouvements" class="table-row">
+            <td>{{ mvt.dateMvt | date:'dd/MM/yyyy' }}</td>
+            <td>{{ mvt.article?.designation || 'N/A' }}</td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'badge-entree': mvt.typeMvt === 'ENTREE',
+                'badge-sortie': mvt.typeMvt === 'SORTIE'
+              }">
+                {{ mvt.typeMvt }}
+              </span>
+            </td>
+            <td>{{ mvt.quantite }}</td>
+            <td>N/A</td>
+            <td class="actions-cell">
+              <button class="btn-action btn-edit" (click)="modifierMouvement(mvt)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-action btn-delete" (click)="supprimerMouvement(mvt)">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button class="btn-action btn-view" (click)="voirDetails(mvt)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+  </div>
+</div>
+
+<div class="alert alert-danger" *ngIf="errorMsg">
+  {{errorMsg}}
+</div>
+
+<app-modal-confirmation 
+  [isVisible]="showDeleteModal"
+  [message]="getDeleteMessage()"
+  (confirm)="confirmerSuppression()"
+  (cancel)="fermerModal()">
+</app-modal-confirmation>

@@ -1,0 +1,65 @@
+<div class="detail-container">
+  <div class="detail-card">
+    <div class="detail-header">
+      <h2>
+        <i class="fas fa-box"></i>
+        Détails de l'article
+      </h2>
+      <button type="button" class="close-btn" (click)="retour()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="detail-body" *ngIf="article">
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Code Article</label>
+          <span class="value">{{ article.codeArticle || 'N/A' }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label>Désignation</label>
+          <span class="value">{{ article.designation || 'N/A' }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label>Prix Unitaire</label>
+          <span class="value price">{{ article.prixUnitaire | currency:'EUR':'symbol':'1.2-2' }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label>Taux TVA</label>
+          <span class="value">{{ article.tauxTva || 0 }}%</span>
+        </div>
+        
+        <div class="info-item">
+          <label>Prix TTC</label>
+          <span class="value price">{{ article.prixUnitaireTtc | currency:'EUR':'symbol':'1.2-2' }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label>Catégorie</label>
+          <span class="value category">{{ article.categorie?.designation || 'Aucune catégorie' }}</span>
+        </div>
+        
+        <div class="info-item full-width" *ngIf="article.photo">
+          <label>Photo</label>
+          <div class="photo-container">
+            <img [src]="article.photo" [alt]="article.designation" class="article-photo">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="detail-footer">
+      <button type="button" class="btn btn-secondary" (click)="retour()">
+        <i class="fas fa-arrow-left"></i>
+        Retour
+      </button>
+      <button type="button" class="btn btn-primary" (click)="modifier()">
+        <i class="fas fa-edit"></i>
+        Modifier
+      </button>
+    </div>
+  </div>
+</div>

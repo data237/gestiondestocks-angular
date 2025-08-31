@@ -1,0 +1,57 @@
+<div class="row mb-1 m-1 custom-border" *ngIf="utilisateur">
+  <div class="col-md-1 custom-border-right p-1 text-center mb-1 mt-1">
+    <img [src]="utilisateur.photo || 'product.png'" alt="utilisateur" width="100px">
+  </div>
+  <div class="col-md-5 custom-border-right mb-1 mt-1">
+    <div class="col">
+      <div class="row">
+        <div class="col-md-1"><i class="fas fa-user blue-color"></i> </div>
+        <div class="col-11">{{utilisateur.nom}} {{utilisateur.prenom}}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-1"><i class="fas fa-envelope blue-color"></i> </div>
+        <div class="col-md-11">{{utilisateur.email}}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-1"><i class="fas fa-calendar blue-color"></i> </div>
+        <div class="col-md-11">{{utilisateur.dateDeNaissance | date:'dd/MM/yyyy'}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 custom-border-right mb-1 mt-1">
+    <div class="row">
+      <div class="row">
+        <div class="col-md-1"><i class="fas fa-home blue-color"></i> </div>
+        <div class="col-11">{{utilisateur.adresse?.adresse1}} {{utilisateur.adresse?.adresse2}}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-1"><i class="fas fa-map-marker-alt blue-color"></i> </div>
+        <div class="col-md-11">{{utilisateur.adresse?.codePostal}} {{utilisateur.adresse?.ville}}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-1"><i class="fas fa-globe-europe blue-color"></i> </div>
+        <div class="col-md-11">{{utilisateur.adresse?.pays}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 mb-1 mt-1">
+    <div class="row">
+      <div class="col-md-4">
+        <button type="button" class="btn btn-link">
+          <i class="fas fa-pencil-alt"></i>&nbsp;Modifier</button>
+      </div>
+      <div class="col-md-4">
+        <button type="button" class="btn btn-link text-danger" (click)="deleteUtilisateur()">
+          <i class="fas fa-trash-alt"></i>&nbsp;Supprimer</button>
+      </div>
+      <div class="col-md-4">
+        <button type="button" class="btn btn-link">
+          <i class="fas fa-list-alt"></i>&nbsp;Détail</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
