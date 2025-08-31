@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {AuthControllerService, AuthResponseDto, LoginRequestDto} from '../../../gs-api/src';
 
-import {Observable, Subscription} from 'rxjs';
+import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
 
@@ -10,8 +10,8 @@ import {Router} from '@angular/router';
 })
 export class UserService {
   constructor(
-    private authenticationService: AuthControllerService,
-    private route: Router
+    private readonly authenticationService: AuthControllerService,
+    private readonly route: Router
   ) {
   }
 
@@ -21,6 +21,7 @@ export class UserService {
   }
   setConnectedUser(authenticationResponse: AuthResponseDto) : void{
     localStorage.setItem('connectedUser', JSON.stringify(authenticationResponse))
+    localStorage.setItem('accessToken', authenticationResponse.token || '')
   }
 
   getConnectedUser(): AuthResponseDto {
@@ -30,14 +31,31 @@ export class UserService {
     return {};
   }
 
-  //TODO
+  getAccessToken(): string | null {
+    return localStorage.getItem('accessToken');
+  }
 
   isUserLoggerAndAccessTokenValid(): boolean{
-    if(localStorage.getItem('connectedUser')){
-      //TODO
-      return true
+    const token = this.getAccessToken();
+    if(token && localStorage.getItem('connectedUser')){
+      // Check if token is not expired (basic validation)
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+        return payload.exp > currentTime;
+      } catch (error) {
+        console.error('Token validation error:', error);
+        this.logout();
+        return false;
+      }
     }
     this.route.navigate(['login'])
     return false
+  }
+
+  logout(): void {
+    localStorage.removeItem('connectedUser');
+    localStorage.removeItem('accessToken');
+    this.route.navigate(['login']);
   }
 }

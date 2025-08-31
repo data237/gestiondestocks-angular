@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import {BouttonAction} from "../../../composants/boutton-action/boutton-action";
-import {DetailArticle} from "../../../composants/detail-article/detail-article";
 import {Pagination} from "../../../composants/pagination/pagination";
 import {Router} from '@angular/router';
 import {CategorieResponseDto} from '../../../../gs-api/src';
@@ -67,7 +66,11 @@ export class PageCategories {
     this.selectedCatIdToDelete = -1
   }
 
-  selectCategoriePourSupprimer(id?: number | undefined): void {
+  supprimerCategory(id?: number | undefined): void {
       this.selectedCatIdToDelete = id
+  }
+
+  voirDetails(cat: CategorieResponseDto): void {
+    console.log('Voir détails catégorie:', cat);
   }
 }

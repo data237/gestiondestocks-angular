@@ -3,7 +3,6 @@ import {HttpHandler, HttpInterceptor, HttpEvent, HttpRequest, HttpHeaders, HttpR
 import {Observable, tap} from 'rxjs';
 import {AuthResponseDto} from '../../../gs-api/src';
 import {LoaderService} from '../../composants/loader/service/loader';
-import {error} from 'ng-packagr/src/lib/utils/log';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +23,8 @@ export class Intercepter implements HttpInterceptor{
       const authReq = req.clone({
         headers: new HttpHeaders({
           Authorization: 'Bearer ' + authenticationResponse.token,
-          Accept: 'application/json'
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
         })
       })
       return this.handelRequest(authReq, next)

@@ -112,6 +112,12 @@ export class Menu {
           titre: 'Utilisateurs',
           icon: 'fas fa-users-cog',
           url: 'utilisateurs'
+        },
+        {
+          id: '53',
+          titre: 'Rôles',
+          icon: 'fas fa-user-tag',
+          url: 'roles'
         }
       ]
     }

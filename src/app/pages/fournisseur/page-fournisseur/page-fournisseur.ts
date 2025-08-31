@@ -1,19 +1,18 @@
 import { Component } from '@angular/core';
 import {BouttonAction} from "../../../composants/boutton-action/boutton-action";
-import {DetailCltFrs} from "../../../composants/detail-clt-frs/detail-clt-frs";
 import {Pagination} from "../../../composants/pagination/pagination";
 import {Router} from '@angular/router';
 import {Cltfrs} from '../../../services/cltfrs/cltfrs';
 import {FournisseurResponseDto} from '../../../../gs-api/src';
-import {NgForOf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-page-fournisseur',
   imports: [
     BouttonAction,
-    DetailCltFrs,
     Pagination,
-    NgForOf
+    NgForOf,
+    NgIf
   ],
   templateUrl: './page-fournisseur.html',
   styleUrl: './page-fournisseur.css'
@@ -49,5 +48,27 @@ export class PageFournisseur {
     }else{
       this.errorMsg = $event
     }
+  }
+
+  modifierFournisseur(fournisseur: FournisseurResponseDto): void {
+    this.router.navigate(['nouveaufournisseur', fournisseur.id]);
+  }
+
+  supprimerFournisseur(fournisseur: FournisseurResponseDto): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce fournisseur ?')) {
+      this.cltFrsService.deleteFournisseur(fournisseur.id!)
+        .subscribe({
+          next: () => {
+            this.findAllFournisseurs();
+          },
+          error: (error) => {
+            this.errorMsg = 'Erreur lors de la suppression';
+          }
+        });
+    }
+  }
+
+  voirDetails(fournisseur: FournisseurResponseDto): void {
+    console.log('Voir détails fournisseur:', fournisseur);
   }
 }

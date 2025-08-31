@@ -17,12 +17,12 @@ import {NgIf} from '@angular/common';
 })
 export class PageLogin {
 
-
   authenticationRequest: LoginRequestDto = {
     email: '',
     password: ''
   }
-errorMessage=""
+  errorMessage = ""
+  showPassword = false
 
 
   constructor(
@@ -30,14 +30,22 @@ errorMessage=""
     private router: Router
   ) {}
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   login(): void{
     this.userService.login(this.authenticationRequest)
       .subscribe({
-      next : (data : AuthResponseDto) =>{
-      this.userService.setConnectedUser(data)
-      this.router.navigate([''])
-    },error: (error)=>{
-      this.errorMessage = 'Login et / ou mot de passe incorrecte'
-    }})
+        next : (data : AuthResponseDto) => {
+          console.log('Login successful:', data);
+          this.userService.setConnectedUser(data);
+          this.router.navigate(['']);
+        },
+        error: (error) => {
+          console.error('Login error:', error);
+          this.errorMessage = 'Login et / ou mot de passe incorrecte';
+        }
+      });
   }
 }

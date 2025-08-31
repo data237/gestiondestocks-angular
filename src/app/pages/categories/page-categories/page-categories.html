@@ -1,45 +1,44 @@
-<div class="col">
-  <div class="row m-3">
-    <div class="col-md-8 p-0">
-      <h1>Liste des categories</h1>
-    </div>
-    <div class="col-md-4 text-end">
-      <app-boutton-action
-        (clickEvent)="nouvelCategory()"
-      ></app-boutton-action>
-    </div>
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Liste des catégories</h1>
+    <app-boutton-action (clickEvent)="nouvelCategory()"></app-boutton-action>
   </div>
-  <div class="col m-3">
-    <div class="row col-md-12 alert alert-danger" *ngIf="errorMsg">
-      {{errorMsg}}
-    </div>
-   <div class="row custom-border mb-3 p-3" *ngFor="let cat of listCategories">
-     <div class="col-md-3 custom-border-right">
-       {{cat.code}}
-     </div>
-     <div class="col-md-4 custom-border-right">
-       {{cat.designation}}
-     </div>
-     <div class="col-md-3">
-       <div class="row">
-         <div class="col-md-4">
-           <button type="button" class="btn btn-link" (click)="modifierCategory(cat.id)">
-             <i class="fas fa-pencil-alt"></i>&nbsp;Modifier</button>
-         </div>
-         <div class="col-md-4">
-           <button type="button" class="btn btn-link text-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteCat" (click)="selectCategoriePourSupprimer(cat.id)">
-             <i class="fas fa-trash-alt"></i>&nbsp;Supprimer</button>
-         </div>
-         <div class="col-md-4">
-           <button type="button" class="btn btn-link">
-             <i class="fas fa-list-alt"></i>&nbsp;Detail</button>
-         </div>
-       </div>
-     </div>
-   </div>
+  
+  <div class="alert alert-danger" *ngIf="errorMsg">
+    {{errorMsg}}
   </div>
-  <div class="row mb-3" *ngIf="listCategories.length > 0">
-    <div class="col-md-12 text-center ">
+
+  <div class="data-table-container">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Désignation</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cat of listCategories" class="table-row">
+            <td>{{ cat.code }}</td>
+            <td>{{ cat.designation }}</td>
+            <td class="actions-cell">
+              <button class="btn-action btn-edit" (click)="modifierCategory(cat.id)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-action btn-delete" (click)="supprimerCategory(cat.id)" data-bs-toggle="modal" data-bs-target="#modalDeleteCat">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button class="btn-action btn-view" (click)="voirDetails(cat)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="table-footer" *ngIf="listCategories.length > 0">
       <app-pagination></app-pagination>
     </div>
   </div>

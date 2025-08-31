@@ -18,6 +18,9 @@ import {PageUtilisateur} from './pages/utilisateur/page-utilisateur/page-utilisa
 import {NouvelUtilisateur} from './pages/utilisateur/nouvel-utilisateur/nouvel-utilisateur';
 import {PageProfil} from './pages/profil/page-profil/page-profil';
 import {ChangerMotDePasse} from './pages/profil/changer-mot-de-passe/changer-mot-de-passe';
+import {PageRoles} from './pages/roles/page-roles/page-roles';
+import {NouveauRole} from './pages/roles/nouveau-role/nouveau-role';
+import {DashboardOverview} from './pages/dashboard-overview/dashboard-overview';
 import {ApplicationGuard} from './services/guard/application-guard';
 export const routes: Routes = [
   {
@@ -33,6 +36,11 @@ export const routes: Routes = [
     component: PageDashboard,
     canActivate: [ApplicationGuard],
     children: [
+      {
+        path: '',
+        component: DashboardOverview,
+        canActivate: [ApplicationGuard]
+      },
       {
         path: 'statistiques',
         component: PageStatistiques,
@@ -156,6 +164,16 @@ export const routes: Routes = [
       {
         path: 'changermotdepasse',
         component: ChangerMotDePasse,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'roles',
+        component: PageRoles,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'nouveaurole',
+        component: NouveauRole,
         canActivate: [ApplicationGuard]
       }
     ]

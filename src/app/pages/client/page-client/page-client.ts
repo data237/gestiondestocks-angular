@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import {BouttonAction} from "../../../composants/boutton-action/boutton-action";
-import {DetailArticle} from "../../../composants/detail-article/detail-article";
 import {Pagination} from "../../../composants/pagination/pagination";
-import {DetailCltFrs} from '../../../composants/detail-clt-frs/detail-clt-frs';
 import {Router} from '@angular/router';
 import {Cltfrs} from '../../../services/cltfrs/cltfrs';
 import {ClientResponseDto} from '../../../../gs-api/src';
@@ -13,7 +11,6 @@ import {NgForOf, NgIf} from '@angular/common';
   imports: [
     BouttonAction,
     Pagination,
-    DetailCltFrs,
     NgForOf,
     NgIf
   ],
@@ -51,5 +48,27 @@ export class PageClient {
     }else{
       this.errorMsg = $event
     }
+  }
+
+  modifierClient(client: ClientResponseDto): void {
+    this.router.navigate(['nouveauclient', client.id]);
+  }
+
+  supprimerClient(client: ClientResponseDto): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
+      this.cltFrsService.deleteClient(client.id!)
+        .subscribe({
+          next: () => {
+            this.findAllClient();
+          },
+          error: (error) => {
+            this.errorMsg = 'Erreur lors de la suppression';
+          }
+        });
+    }
+  }
+
+  voirDetails(client: ClientResponseDto): void {
+    console.log('Voir détails client:', client);
   }
 }

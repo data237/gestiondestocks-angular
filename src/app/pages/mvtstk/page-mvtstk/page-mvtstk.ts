@@ -1,21 +1,51 @@
 import { Component } from '@angular/core';
 import {BouttonAction} from "../../../composants/boutton-action/boutton-action";
-import {DetailArticle} from "../../../composants/detail-article/detail-article";
 import {Pagination} from "../../../composants/pagination/pagination";
-import {DetailMvtStkArticle} from '../../../composants/detail-mvt-stk-article/detail-mvt-stk-article';
-import {DetailMvtStk} from '../../../composants/detail-mvt-stk/detail-mvt-stk';
+import {NgForOf, NgClass, DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-page-mvtstk',
   imports: [
     BouttonAction,
     Pagination,
-    DetailMvtStkArticle,
-    DetailMvtStk
+    NgForOf,
+    NgClass,
+    DatePipe
   ],
   templateUrl: './page-mvtstk.html',
   styleUrl: './page-mvtstk.css'
 })
 export class PageMvtstk {
+  listMouvements: any[] = [];
 
+  ngOnInit(): void {
+    // Initialize movements data
+    this.loadMouvements();
+  }
+
+  loadMouvements(): void {
+    // TODO: Load movements from service
+    this.listMouvements = [
+      {
+        id: 1,
+        dateMvt: new Date(),
+        article: { designation: 'Article 1' },
+        typeMvt: 'ENTREE',
+        quantite: 10,
+        sourceMvt: 'Fournisseur A'
+      },
+      {
+        id: 2,
+        dateMvt: new Date(),
+        article: { designation: 'Article 2' },
+        typeMvt: 'SORTIE',
+        quantite: 5,
+        sourceMvt: 'Client B'
+      }
+    ];
+  }
+
+  voirDetails(mvt: any): void {
+    console.log('Voir détails mouvement:', mvt);
+  }
 }

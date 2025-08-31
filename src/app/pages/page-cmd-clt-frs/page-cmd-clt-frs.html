@@ -1,57 +1,85 @@
-<div class="col">
-  <div class="row m-3">
-    <div class="col-md-8 p-0">
-      <h1>Commande {{ origin }}</h1>
-    </div>
-    <div class="col-md-4 text-end">
-      <app-boutton-action
-      (clickEvent)="nouvelleCommande()"
-      [isImporterVisible] = "false"
-      ></app-boutton-action>
-    </div>
-  </div>
-  <div class="col m-3">
-    <div class="accordion" id="accordionExample">
-      <div class="card">
-        <div class="card-header" id="headingOne">
-          <h2 class="mb-0">
-            <button class="btn btn-link btn-block text-start col-md-12"  type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              <app-detail-cmd-clt-frs></app-detail-cmd-clt-frs>
-            </button>
-          </h2>
-        </div>
-        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample"
-             style="max-height: 300px; overflow-y: scroll">
-          <div class="card-body">
-            <app-detail-cmd></app-detail-cmd>
-            <app-detail-cmd></app-detail-cmd>
-            <app-detail-cmd></app-detail-cmd>
-            <app-detail-cmd></app-detail-cmd>
-            <app-detail-cmd></app-detail-cmd>
-            <app-detail-cmd></app-detail-cmd>
-            <app-detail-cmd></app-detail-cmd>
-            <app-detail-cmd></app-detail-cmd>
-            <app-detail-cmd></app-detail-cmd>
-          </div>
-      </div>
-      <div class="card-footer">
-        <div class="row">
-          <div class="col-md-6 text-start">
-            <h5>12 Articles commandes</h5>
-          </div>
-          <div class="col-md-6 text-end">
-            <h5>Total commandes: 123.69</h5>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">{{ origin === 'client' ? 'Commandes clients' : 'Commandes fournisseurs' }}</h1>
+    <app-boutton-action (clickEvent)="nouvelleCommande()"></app-boutton-action>
   </div>
 
+  <div class="alert alert-danger" *ngIf="errorMsg">
+    {{errorMsg}}
+  </div>
+
+  <div class="data-table-container">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Date</th>
+            <th>{{ origin === 'client' ? 'Client' : 'Fournisseur' }}</th>
+            <th>Nb Articles</th>
+            <th>Total</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let commande of commandes" class="table-row">
+            <td>{{ commande.code }}</td>
+            <td>{{ commande.dateCommande | date:'dd/MM/yyyy' }}</td>
+            <td>{{ getClientFournisseurName(commande) }}</td>
+            <td>{{ getNbArticles(commande) }}</td>
+            <td>{{ getTotalCommande(commande) | currency:'EUR':'symbol':'1.2-2' }}</td>
+            <td>
+              <span class="badge badge-success">Validée</span>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-action btn-edit" (click)="modifierCommande(commande)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-action btn-delete" (click)="supprimerCommande(commande)">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button class="btn-action btn-view" (click)="voirDetails(commande)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div *ngIf="commandes.length === 0" class="text-center">
+      <p>Aucune commande trouvée</p>
+    </div>
+    
+    <div class="table-footer" *ngIf="commandes.length > 0">
+      <div class="row">
+        <div class="col-md-6 text-start">
+          <h5>{{ commandes.length }} Commande(s)</h5>
+        </div>
+        <div class="col-md-6 text-end">
+          <h5>Total: {{ getTotalGeneral() | currency:'EUR':'symbol':'1.2-2' }}</h5>
+        </div>
+      </div>
+    </div>
+    <app-pagination></app-pagination>
+  </div>
 </div>
-  <div class="row mb-3">
-    <div class="col-md-12 text-center ">
-      <app-pagination></app-pagination>
-    </div>
 
+<!-- Modal de confirmation de suppression -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="annulerSuppression()" (keydown.escape)="annulerSuppression()">
+  <div class="modal-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+    <div class="modal-title">Confirmation</div>
+    <div class="modal-message">
+      Êtes-vous sûr de vouloir supprimer cette commande ?
+    </div>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-cancel" (click)="annulerSuppression()">
+        Annuler
+      </button>
+      <button class="modal-btn modal-btn-confirm" (click)="confirmerSuppression()">
+        OK
+      </button>
+    </div>
   </div>
 </div>

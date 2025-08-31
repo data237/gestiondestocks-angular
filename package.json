@@ -10,7 +10,7 @@
     "start:local": "npm run gs-api && ng serve -- --proxyConfig=proxy.conf.json",
     "gs-api": "npm run gs-api:create-dist && npm run gs-api:download && npm run gs-api:extract && npm run gs-api:openapi-generator-cli",
     "gs-api:create-dist": "mkdir tools\\swagger\\dist && mkdir tools\\swagger\\src",
-    "gs-api:download": "copy C:\\Users\\mabou\\Documents\\inventory-management-backend\\target\\inventory-management-0.0.1-SNAPSHOT.jar .\\tools\\swagger\\dist && copy C:\\Users\\mabou\\Documents\\gestion_de_stock\\gestiondestocks\\src\\assets\\swagger.json .\\tools\\swagger\\src",
+    "gs-api:download": "copy D:\\Cours_pk48\\gestionStock\\inventory-management-backend\\target\\inventory-management-0.0.1-SNAPSHOT.jar .\\tools\\swagger\\dist && copy D:\\Cours_pk48\\gestionStock\\gestiondestocks-angular\\public\\swagger.json .\\tools\\swagger\\src",
     "gs-api:extract": "node .\\tools\\swagger\\src\\swagger.json 0.0.1-SNAPSHOT",
     "gs-api:openapi-generator-cli": "npx openapi-generator-cli generate -i tools/swagger/src/swagger.json -g typescript-angular -o src/gs-api/src --additional-properties=ngVersion=20.0.0"
   },

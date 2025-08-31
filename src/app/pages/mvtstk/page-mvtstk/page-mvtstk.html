@@ -1,47 +1,52 @@
-<div class="col">
-  <div class="row m-3">
-    <div class="col-md-8 p-0">
-      <h1>Mouvements du stock</h1>
-    </div>
-    <div class="col-md-4 text-end">
-      <app-boutton-action
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Mouvements du stock</h1>
+    <app-boutton-action
       [isImporterVisible]="false"
-      [isNouveauVisible] = "false"
-      ></app-boutton-action>
-    </div>
+      [isNouveauVisible]="false">
+    </app-boutton-action>
   </div>
-  <div class="col m-3">
-    <div class="accordion" id="accordionExample">
-      <div class="card mb-2">
-        <div class="card-header" id="headingOne">
-          <h2 class="mb-0">
-            <button class="btn btn-link btn-block text-start col-md-12"  type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              <app-detail-mvt-stk-article></app-detail-mvt-stk-article>
-            </button>
-          </h2>
-        </div>
-        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample"
-        style="max-height: 300px; overflow-y: scroll">
-          <div class="card-body">
-            <app-detail-mvt-stk></app-detail-mvt-stk>
-            <app-detail-mvt-stk></app-detail-mvt-stk>
-            <app-detail-mvt-stk></app-detail-mvt-stk>
-            <app-detail-mvt-stk></app-detail-mvt-stk>
-            <app-detail-mvt-stk></app-detail-mvt-stk>
-            <app-detail-mvt-stk></app-detail-mvt-stk>
-            <app-detail-mvt-stk></app-detail-mvt-stk>
-            <app-detail-mvt-stk></app-detail-mvt-stk>
-            <app-detail-mvt-stk></app-detail-mvt-stk>
-          </div>
-        </div>
-      </div>
-    </div>
 
-  </div>
-  <div class="row mb-3">
-    <div class="col-md-12 text-center ">
+  <div class="data-table-container">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Article</th>
+            <th>Type Mouvement</th>
+            <th>Quantité</th>
+            <th>Source/Destination</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mvt of listMouvements" class="table-row">
+            <td>{{ mvt.dateMvt | date:'dd/MM/yyyy' }}</td>
+            <td>{{ mvt.article?.designation || 'N/A' }}</td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'badge-entree': mvt.typeMvt === 'ENTREE',
+                'badge-sortie': mvt.typeMvt === 'SORTIE',
+                'badge-correction': mvt.typeMvt === 'CORRECTION_POS' || mvt.typeMvt === 'CORRECTION_NEG'
+              }">
+                {{ mvt.typeMvt }}
+              </span>
+            </td>
+            <td>{{ mvt.quantite }}</td>
+            <td>{{ mvt.sourceMvt || 'N/A' }}</td>
+            <td class="actions-cell">
+              <button class="btn-action btn-view" (click)="voirDetails(mvt)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="table-footer">
       <app-pagination></app-pagination>
     </div>
-
   </div>
 </div>

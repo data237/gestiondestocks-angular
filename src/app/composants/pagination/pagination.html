@@ -1,15 +1,31 @@
-<div class="btn-group" role="group" aria-label="Basic example">
-  <button type="button" class="btn btn-light">
-    <i class="fas fa fa-angle-double-left"></i></button>
-  <button type="button" class="btn btn-light"><i class="fas fa fa-angle-left"></i></button>
+<div class="pagination-container">
+  <div class="pagination-info">
+    Affichage {{ (currentPage - 1) * itemsPerPage + 1 }} à {{ Math.min(currentPage * itemsPerPage, totalItems) }} sur {{ totalItems }} éléments
+  </div>
+  
+  <div class="btn-group pagination-controls" role="group" aria-label="Pagination">
+    <button type="button" class="btn btn-light" (click)="goToFirst()" [disabled]="currentPage === 1">
+      <i class="fas fa-angle-double-left"></i>
+    </button>
+    <button type="button" class="btn btn-light" (click)="goToPrevious()" [disabled]="currentPage === 1">
+      <i class="fas fa-angle-left"></i>
+    </button>
 
-  <button type="button" class="btn btn-light">1</button>
-  <button type="button" class="btn btn-light">2</button>
-  <button type="button" class="btn btn-light">3</button>
-  <button type="button" class="btn btn-light">4</button>
-  <button type="button" class="btn btn-light">5</button>
+    <button 
+      type="button" 
+      class="btn" 
+      *ngFor="let page of pages"
+      [class.btn-primary]="page === currentPage"
+      [class.btn-light]="page !== currentPage"
+      (click)="goToPage(page)">
+      {{ page }}
+    </button>
 
-  <button type="button" class="btn btn-light"><i class="fas fa fa-angle-right"></i></button>
-  <button type="button" class="btn btn-light">
-    <i class="fas fa fa-angle-double-right"></i></button>
+    <button type="button" class="btn btn-light" (click)="goToNext()" [disabled]="currentPage === totalPages">
+      <i class="fas fa-angle-right"></i>
+    </button>
+    <button type="button" class="btn btn-light" (click)="goToLast()" [disabled]="currentPage === totalPages">
+      <i class="fas fa-angle-double-right"></i>
+    </button>
+  </div>
 </div>
