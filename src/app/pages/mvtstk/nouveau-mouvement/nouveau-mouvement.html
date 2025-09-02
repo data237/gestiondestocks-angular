@@ -44,15 +44,18 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="article">Article *</label>
-          <input 
-            type="text" 
-            id="article" 
-            name="article"
+          <label for="articleId">Article *</label>
+          <select 
+            id="articleId" 
+            name="articleId"
             class="form-control"
             [(ngModel)]="mouvement.articleId"
-            placeholder="Désignation de l'article"
             required>
+            <option value="">Sélectionner un article</option>
+            <option *ngFor="let article of articles" [value]="article.id">
+              {{ article.designation }} ({{ article.codeArticle }})
+            </option>
+          </select>
         </div>
 
         <div class="form-group">

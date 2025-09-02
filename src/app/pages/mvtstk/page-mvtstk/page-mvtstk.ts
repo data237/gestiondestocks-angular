@@ -27,7 +27,7 @@ export class PageMvtstk implements OnInit {
     private readonly mvtStkService: MvtStkService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {   
     // Initialize movements data
     this.loadMouvements();
   }
@@ -96,5 +96,9 @@ export class PageMvtstk implements OnInit {
     console.log('Voir détails mouvement:', mvt);
     // Navigate to movement details page
     this.router.navigate(['detailmouvement', mvt.id]);
+  }
+
+  nouveauMouvement(): void {
+    this.router.navigate(['nouveaumouvement']);
   }
 }

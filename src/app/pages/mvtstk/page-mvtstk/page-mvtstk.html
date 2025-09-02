@@ -2,8 +2,8 @@
   <div class="page-header">
     <h1 class="page-title">Mouvements du stock</h1>
     <app-boutton-action
-      [isImporterVisible]="false"
-      [isNouveauVisible]="false">
+      [isNouveauVisible]="true"
+      (clickEvent)="nouveauMouvement()">
     </app-boutton-action>
   </div>
 
@@ -60,6 +60,6 @@
 <app-modal-confirmation 
   [isVisible]="showDeleteModal"
   [message]="getDeleteMessage()"
-  (confirm)="confirmerSuppression()"
-  (cancel)="fermerModal()">
+  (confirmed)="confirmerSuppression()"
+  (cancelled)="fermerModal()">
 </app-modal-confirmation>

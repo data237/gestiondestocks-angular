@@ -12,8 +12,7 @@ import {NgIf} from '@angular/common';
 export class BouttonAction {
 
   @Input() isNouveauVisible = true
-  @Input() isExporterVisible = true
-  @Input() isImporterVisible= true
+
 
   @Output() clickEvent = new EventEmitter();
 
