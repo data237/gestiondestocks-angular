@@ -1,26 +1,54 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ModalConfirmation } from '../../../composants/modal-confirmation/modal-confirmation';
+import { CommonModule } from '@angular/common';
+
 import { BouttonAction } from '../../../composants/boutton-action/boutton-action';
+import { ModalConfirmation } from '../../../composants/modal-confirmation/modal-confirmation';
+import { DataTable, DataTableColumn, DataTableAction } from '../../../composants/data-table/data-table';
+
 import { MvtStkService } from '../../../services/mvtstk.service';
-import { MvtStkResponseDto } from '../../../../gs-api/src/model/models';
 
 @Component({
   selector: 'app-page-mvtstk',
   imports: [
     CommonModule,
     ModalConfirmation,
-    BouttonAction
+    BouttonAction,
+    DataTable
   ],
   templateUrl: './page-mvtstk.html',
   styleUrl: './page-mvtstk.css'
 })
 export class PageMvtstk implements OnInit {
-  listMouvements: MvtStkResponseDto[] = [];
+  listMouvements: any[] = [];
   showDeleteModal = false;
-  mouvementToDelete: MvtStkResponseDto | null = null;
+  mouvementToDelete: any = null;
   errorMsg = '';
+  loading = false;
+
+  // DataTable configuration
+  columns: DataTableColumn[] = [
+    { key: 'dateMvt', label: 'Date', type: 'date', sortable: true },
+    { key: 'article.designation', label: 'Article', type: 'text', sortable: true },
+    { 
+      key: 'typeMvt', 
+      label: 'Type Mouvement', 
+      type: 'badge', 
+      sortable: true,
+      badgeConfig: {
+        'ENTREE': { class: 'badge-entree', label: 'ENTREE' },
+        'SORTIE': { class: 'badge-sortie', label: 'SORTIE' }
+      }
+    },
+    { key: 'quantite', label: 'Quantité', type: 'text', sortable: true },
+    { key: 'source', label: 'Source/Destination', type: 'text' }
+  ];
+
+  actions: DataTableAction[] = [
+    { icon: 'fas fa-edit', class: 'btn-edit', tooltip: 'Modifier', action: 'edit' },
+    { icon: 'fas fa-trash', class: 'btn-delete', tooltip: 'Supprimer', action: 'delete' },
+    { icon: 'fas fa-eye', class: 'btn-view', tooltip: 'Voir détails', action: 'view' }
+  ];
 
   constructor(
     private readonly router: Router,
@@ -33,17 +61,42 @@ export class PageMvtstk implements OnInit {
   }
 
   loadMouvements(): void {
+    this.loading = true;
     this.mvtStkService.findAll().subscribe({
-      next: (mouvements) => {
-        this.listMouvements = mouvements;
+      next: (mouvements: any[]) => {
+        // Add source/destination info to each movement
+        this.listMouvements = mouvements.map(mvt => ({
+          ...mvt,
+          source: mvt.typeMvt === 'ENTREE' ? 'Fournisseur' : 'Client/Vente'
+        }));
+        this.loading = false;
         this.errorMsg = '';
       },
       error: (error) => {
         console.error('Erreur lors du chargement des mouvements:', error);
-        this.errorMsg = 'Erreur lors du chargement des mouvements de stock';
-        this.listMouvements = [];
+        this.errorMsg = 'Erreur lors du chargement des mouvements';
+        this.loading = false;
       }
     });
+  }
+
+  onActionClick(event: {action: string, item: any}): void {
+    switch (event.action) {
+      case 'edit':
+        this.modifierMouvement(event.item);
+        break;
+      case 'delete':
+        this.supprimerMouvement(event.item);
+        break;
+      case 'view':
+        this.voirDetails(event.item);
+        break;
+    }
+  }
+
+  onSortChange(event: {column: string, direction: 'asc' | 'desc'}): void {
+    // Handle sorting logic here if needed
+    console.log('Sort:', event);
   }
 
   modifierMouvement(mvt: any): void {
