@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {EntrepriseRequestDto} from '../../../gs-api/src/model/entrepriseRequestDto';
-import {Entreprise} from '../../services/entreprise/entreprise';
+import {EntrepriseService} from '../../services/entreprise/entreprise';
 import {NgForOf, NgIf} from '@angular/common';
 
 @Component({
@@ -39,12 +39,12 @@ export class PageInscription {
   private successMsg: string | undefined;
 
   constructor(
-    private entrepriseService: Entreprise
+    private entrepriseService: EntrepriseService
   ) {
   }
 
   inscrire(): void {
-    this.entrepriseService.sincrire(this.entrepriseRequestDto)
+    this.entrepriseService.create(this.entrepriseRequestDto)
       .subscribe({
         next: (entrepriseResponseDto) => {
           // Exemple : redirection ou affichage d’un message de succès

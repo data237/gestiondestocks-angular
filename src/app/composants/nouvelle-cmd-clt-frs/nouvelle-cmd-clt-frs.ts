@@ -57,6 +57,13 @@ export class NouvelleCmdCltFrs {
     this.activateRoute.data.subscribe(data =>{
       this.origin = data['origin']
     })
+    
+    // Check if we're editing an existing command
+    const id = this.activateRoute.snapshot.paramMap.get('id');
+    if (id) {
+      this.loadCommandeForEdit(parseInt(id, 10));
+    }
+    
     this.findAll()
     this.findAllArticles()
   }
@@ -185,22 +192,49 @@ export class NouvelleCmdCltFrs {
     }
   }
 
+  loadCommandeForEdit(commandeId: number): void {
+    if (this.origin === 'client') {
+      this.cmdCltFrsService.findAllLigneCommandesClient(commandeId)
+        .subscribe({
+          next: (commande: any) => {
+            this.codeCommande = commande.code || '';
+            // Find and set the selected client
+            this.selectedClientFournisseur = { id: commande.clientId };
+            this.lignesCommande = commande.ligneCommandeClients || [];
+            this.calculateTotal();
+          },
+          error: (error: any) => {
+            console.error('Erreur lors du chargement de la commande:', error);
+          }
+        });
+    }
+  }
+
+  calculateTotal(): void {
+    this.totalCommande = 0;
+    this.lignesCommande.forEach(ligne => {
+      if (ligne.prixUnitaire && ligne.quantite) {
+        this.totalCommande += +ligne.prixUnitaire * +ligne.quantite;
+      }
+    });
+  }
+
   private preparerCommande(): any{
     if(this.origin === 'client'){
       return {
-        client: this.selectedClientFournisseur,
         code: this.codeCommande,
-        dateCommande : new Date().getTime(),
-        etatCommande: 'EN_PREPARATION',
-        ligneCommandeClient: this.lignesCommande
-      }}else if(this.origin === 'fournisseur'){
+        dateCommande: new Date().toISOString().split('T')[0], // Format YYYY-MM-DD
+        clientId: this.selectedClientFournisseur.id,
+        entrepriseId: 1 // Will be set by service
+      }
+    } else if(this.origin === 'fournisseur'){
       return {
-        client: this.selectedClientFournisseur,
         code: this.codeCommande,
-        dateCommande : new Date().getTime(),
-        etatCommande: 'EN_PREPARATION',
-        ligneCommandeFournisseur: this.lignesCommande
-      }}
+        dateCommande: new Date().toISOString().split('T')[0], // Format YYYY-MM-DD
+        fournisseurId: this.selectedClientFournisseur.id,
+        entrepriseId: 1 // Will be set by service
+      }
     }
+  }
 
 }

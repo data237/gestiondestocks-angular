@@ -1,6 +1,9 @@
 /* Menu Styling */
 .accordion {
   background: transparent;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .card {

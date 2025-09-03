@@ -25,6 +25,13 @@ import {ApplicationGuard} from './services/guard/application-guard';
 import {DetailArticle} from './pages/articles/detail-article/detail-article';
 import {NouveauMouvement} from './pages/mvtstk/nouveau-mouvement/nouveau-mouvement';
 import {DetailMouvement} from './pages/mvtstk/detail-mouvement/detail-mouvement';
+import {PageEntrepriseComponent} from './pages/entreprises/page-entreprise/page-entreprise';
+import {NouvelleEntrepriseComponent} from './pages/entreprises/nouvelle-entreprise/nouvelle-entreprise';
+import {DetailCategorieComponent} from './pages/categories/detail-categorie/detail-categorie';
+import {DetailClient} from './pages/client/detail-client/detail-client';
+import {DetailCommandeClient} from './pages/commandes/detail-commande-client/detail-commande-client';
+import {DetailFournisseur} from './pages/fournisseur/detail-fournisseur/detail-fournisseur';
+import {DetailCommandeFournisseur} from './pages/commandes/detail-commande-fournisseur/detail-commande-fournisseur';
 export const routes: Routes = [
   {
     path: 'login',
@@ -103,6 +110,24 @@ export const routes: Routes = [
         }
       },
       {
+        path: 'nouveauclient/:id',
+        component: NouveauCltFrs,
+        canActivate: [ApplicationGuard],
+        data:{
+          origin: 'client'
+        }
+      },
+      {
+        path: 'detailclient/:id',
+        component: DetailClient,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'detailcommandeclient/:id',
+        component: DetailCommandeClient,
+        canActivate: [ApplicationGuard]
+      },
+      {
         path: 'commandesclient',
         component: PageCmdCltFrs,
         canActivate: [ApplicationGuard],
@@ -112,6 +137,14 @@ export const routes: Routes = [
       },
       {
         path: 'nouvellecommandeclt',
+        component: NouvelleCmdCltFrs,
+        canActivate: [ApplicationGuard],
+        data:{
+          origin: 'client'
+        }
+      },
+      {
+        path: 'nouvellecommandeclt/:id',
         component: NouvelleCmdCltFrs,
         canActivate: [ApplicationGuard],
         data:{
@@ -220,6 +253,44 @@ export const routes: Routes = [
       {
         path: 'nouveaufournisseur/:id',
         component: NouveauCltFrs,
+        canActivate: [ApplicationGuard],
+        data: {
+          origin: 'fournisseur'
+        }
+      },
+      {
+        path: 'entreprises',
+        component: PageEntrepriseComponent,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'nouvelleentreprise',
+        component: NouvelleEntrepriseComponent,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'nouvelleentreprise/:idEntreprise',
+        component: NouvelleEntrepriseComponent,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'detailcategorie/:id',
+        component: DetailCategorieComponent,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'detailfournisseur/:idFournisseur',
+        component: DetailFournisseur,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'detailcommandefournisseur/:idCommandeFournisseur',
+        component: DetailCommandeFournisseur,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'nouvellecommandefrs/:id',
+        component: NouvelleCmdCltFrs,
         canActivate: [ApplicationGuard],
         data: {
           origin: 'fournisseur'

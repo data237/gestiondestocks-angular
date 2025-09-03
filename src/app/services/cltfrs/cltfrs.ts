@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import {UserService} from '../user/user';
 import {
-  ClientControllerService,
   ClientResponseDto,
-  FournisseurControllerService,
   FournisseurResponseDto
 } from '../../../gs-api/src';
 import {ClientRequestDto} from '../../../gs-api/src/model/clientRequestDto';
@@ -14,48 +13,77 @@ import {FournisseurRequestDto} from '../../../gs-api/src/model/fournisseurReques
   providedIn: 'root'
 })
 export class Cltfrs {
+  private readonly baseUrlClient = 'http://localhost:8888/gestiondestock/api/v1/clients';
+  private readonly baseUrlFournisseur = 'http://localhost:8888/gestiondestock/api/v1/fournisseurs';
+
   constructor(
-    private userService: UserService,
-    private clientService: ClientControllerService,
-    private fournisseurService: FournisseurControllerService
+    private readonly userService: UserService,
+    private readonly http: HttpClient
   ) {
   }
 
-  enregistrerClient(clientRequestDto: ClientRequestDto): Observable<ClientResponseDto>{
+  enregistrerClient(clientRequestDto: ClientRequestDto, image?: File): Observable<ClientResponseDto>{
     clientRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
-    return this.clientService.save8(clientRequestDto.nom, clientRequestDto.prenom,
-      clientRequestDto.email,clientRequestDto.adresse.adresse1 , clientRequestDto.adresse.pays,
-      clientRequestDto.adresse.codePostal, clientRequestDto.adresse.ville,
-      clientRequestDto.numTel, clientRequestDto.entrepriseId,clientRequestDto.adresse.adresse2)
-
+    
+    const formData = new FormData();
+    formData.append('nom', clientRequestDto.nom || '');
+    formData.append('prenom', clientRequestDto.prenom || '');
+    formData.append('email', clientRequestDto.email || '');
+    formData.append('adresse1', clientRequestDto.adresse?.adresse1 || '');
+    formData.append('adresse2', clientRequestDto.adresse?.adresse2 || '');
+    formData.append('ville', clientRequestDto.adresse?.ville || '');
+    formData.append('codePostal', clientRequestDto.adresse?.codePostal || '');
+    formData.append('pays', clientRequestDto.adresse?.pays || '');
+    formData.append('numTel', clientRequestDto.numTel || '');
+    formData.append('entrepriseId', clientRequestDto.entrepriseId?.toString() || '');
+    
+    if (image) {
+      formData.append('image', image);
+    }
+    
+    return this.http.post<ClientResponseDto>(`${this.baseUrlClient}/create`, formData);
   }
 
-  enregistrerFournisseur(fournisseurRequestDto: FournisseurRequestDto): Observable<FournisseurResponseDto>{
+  enregistrerFournisseur(fournisseurRequestDto: FournisseurRequestDto, image?: File): Observable<FournisseurResponseDto>{
     fournisseurRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
-    return this.fournisseurService.save4(fournisseurRequestDto.nom, fournisseurRequestDto.prenom,
-      fournisseurRequestDto.email,  fournisseurRequestDto.adresse.adresse1,fournisseurRequestDto.adresse.pays ,
-      fournisseurRequestDto.adresse.codePostal,fournisseurRequestDto.adresse.ville ,
-      fournisseurRequestDto.numTel, fournisseurRequestDto.entrepriseId,fournisseurRequestDto.adresse.adresse2)
-
+    
+    const formData = new FormData();
+    formData.append('nom', fournisseurRequestDto.nom || '');
+    formData.append('prenom', fournisseurRequestDto.prenom || '');
+    formData.append('email', fournisseurRequestDto.email || '');
+    formData.append('adresse1', fournisseurRequestDto.adresse?.adresse1 || '');
+    formData.append('adresse2', fournisseurRequestDto.adresse?.adresse2 || '');
+    formData.append('ville', fournisseurRequestDto.adresse?.ville || '');
+    formData.append('codePostal', fournisseurRequestDto.adresse?.codePostal || '');
+    formData.append('pays', fournisseurRequestDto.adresse?.pays || '');
+    formData.append('numTel', fournisseurRequestDto.numTel || '');
+    formData.append('entrepriseId', fournisseurRequestDto.entrepriseId?.toString() || '');
+    
+    if (image) {
+      formData.append('image', image);
+    }
+    
+    return this.http.post<FournisseurResponseDto>(`${this.baseUrlFournisseur}/create`, formData);
   }
 
   findAllClients(): Observable<Array<ClientResponseDto>>{
-    return this.clientService.findAll8()
+    return this.http.get<Array<ClientResponseDto>>(`${this.baseUrlClient}/showAll`);
   }
+  
   findAllFournisseurs(): Observable<Array<FournisseurResponseDto>>{
-    return this.fournisseurService.findAll4()
+    return this.http.get<Array<FournisseurResponseDto>>(`${this.baseUrlFournisseur}/showAll`);
   }
 
   findclientById(id: number): Observable<ClientResponseDto>{
     if(id){
-      return this.clientService.findById8(id)
+      return this.http.get<ClientResponseDto>(`${this.baseUrlClient}/${id}`);
     }
     return of()
   }
 
   findfournisseurById(id: number): Observable<FournisseurResponseDto>{
     if(id){
-      return this.fournisseurService.findById4(id)
+      return this.http.get<FournisseurResponseDto>(`${this.baseUrlFournisseur}/${id}`);
     }
     return of()
   }
@@ -63,15 +91,59 @@ export class Cltfrs {
 
   deleteClient(idClient: number): Observable<any>{
     if(idClient){
-      return this.clientService.delete8(idClient)
+      return this.http.delete(`${this.baseUrlClient}/delete/${idClient}`);
     }
     return of()
   }
 
   deleteFournisseur(idFournisseur: number): Observable<any>{
     if(idFournisseur){
-      return this.fournisseurService.delete4(idFournisseur)
+      return this.http.delete(`${this.baseUrlFournisseur}/delete/${idFournisseur}`);
     }
     return of()
+  }
+
+  updateClient(idClient: number, clientRequestDto: ClientRequestDto, image?: File): Observable<ClientResponseDto>{
+    clientRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
+    
+    const formData = new FormData();
+    formData.append('nom', clientRequestDto.nom || '');
+    formData.append('prenom', clientRequestDto.prenom || '');
+    formData.append('email', clientRequestDto.email || '');
+    formData.append('adresse1', clientRequestDto.adresse?.adresse1 || '');
+    formData.append('adresse2', clientRequestDto.adresse?.adresse2 || '');
+    formData.append('ville', clientRequestDto.adresse?.ville || '');
+    formData.append('codePostal', clientRequestDto.adresse?.codePostal || '');
+    formData.append('pays', clientRequestDto.adresse?.pays || '');
+    formData.append('numTel', clientRequestDto.numTel || '');
+    formData.append('entrepriseId', clientRequestDto.entrepriseId?.toString() || '');
+    
+    if (image) {
+      formData.append('image', image);
+    }
+    
+    return this.http.put<ClientResponseDto>(`${this.baseUrlClient}/update/${idClient}`, formData);
+  }
+
+  updateFournisseur(idFournisseur: number, fournisseurRequestDto: FournisseurRequestDto, image?: File): Observable<FournisseurResponseDto>{
+    fournisseurRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
+    
+    const formData = new FormData();
+    formData.append('nom', fournisseurRequestDto.nom || '');
+    formData.append('prenom', fournisseurRequestDto.prenom || '');
+    formData.append('email', fournisseurRequestDto.email || '');
+    formData.append('adresse1', fournisseurRequestDto.adresse?.adresse1 || '');
+    formData.append('adresse2', fournisseurRequestDto.adresse?.adresse2 || '');
+    formData.append('ville', fournisseurRequestDto.adresse?.ville || '');
+    formData.append('codePostal', fournisseurRequestDto.adresse?.codePostal || '');
+    formData.append('pays', fournisseurRequestDto.adresse?.pays || '');
+    formData.append('numTel', fournisseurRequestDto.numTel || '');
+    formData.append('entrepriseId', fournisseurRequestDto.entrepriseId?.toString() || '');
+    
+    if (image) {
+      formData.append('image', image);
+    }
+    
+    return this.http.put<FournisseurResponseDto>(`${this.baseUrlFournisseur}/update/${idFournisseur}`, formData);
   }
 }

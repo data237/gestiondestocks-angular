@@ -97,6 +97,8 @@ export class PageCategories {
   }
 
   voirDetails(cat: CategorieResponseDto): void {
-    console.log('Voir détails catégorie:', cat);
+    if (cat.id) {
+      this.router.navigate(['detailcategorie', cat.id]);
+    }
   }
 }

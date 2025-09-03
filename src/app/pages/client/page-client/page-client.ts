@@ -89,6 +89,8 @@ export class PageClient {
   }
 
   voirDetails(client: ClientResponseDto): void {
-    console.log('Voir détails client:', client);
+    if (client.id) {
+      this.router.navigate(['/detailclient', client.id]);
+    }
   }
 }

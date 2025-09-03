@@ -57,6 +57,20 @@ export class DetailMouvement implements OnInit {
     this.router.navigate(['nouveaumouvement', this.mouvement?.id]);
   }
 
+  supprimer(): void {
+    if (this.mouvement && confirm('Êtes-vous sûr de vouloir supprimer ce mouvement ?')) {
+      this.mvtStkService.delete3(this.mouvement.id!).subscribe({
+        next: () => {
+          this.router.navigate(['/mvtstk']);
+        },
+        error: (error: any) => {
+          console.error('Erreur lors de la suppression:', error);
+          this.errorMsg = 'Erreur lors de la suppression du mouvement';
+        }
+      });
+    }
+  }
+
   getTypeLabel(type: string): string {
     switch (type) {
       case 'ENTREE':

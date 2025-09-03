@@ -118,6 +118,12 @@ export class Menu {
           titre: 'Rôles',
           icon: 'fas fa-user-tag',
           url: 'roles'
+        },
+        {
+          id: '54',
+          titre: 'Entreprises',
+          icon: 'fas fa-building',
+          url: 'entreprises'
         }
       ]
     }

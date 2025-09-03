@@ -15,7 +15,7 @@ export class DetailArticle implements OnInit {
   
   article: ArticleResponseDto | null = null;
   isLoading = false;
-  errorMessage = '';
+  errorMsg = '';
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -32,7 +32,7 @@ export class DetailArticle implements OnInit {
 
   loadArticle(id: number): void {
     this.isLoading = true;
-    this.errorMessage = '';
+    this.errorMsg = '';
     
     this.articleService.findArticleById(id).subscribe({
       next: (data: ArticleResponseDto) => {
@@ -40,11 +40,25 @@ export class DetailArticle implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        this.errorMessage = 'Erreur lors du chargement de l\'article';
+        this.errorMsg = 'Erreur lors du chargement de l\'article';
         this.isLoading = false;
         console.error('Erreur:', error);
       }
     });
+  }
+
+  supprimer(): void {
+    if (this.article && confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+      this.articleService.deleteArticle(this.article.id!).subscribe({
+        next: () => {
+          this.router.navigate(['/articles']);
+        },
+        error: (error: any) => {
+          console.error('Erreur lors de la suppression:', error);
+          this.errorMsg = 'Erreur lors de la suppression de l\'article';
+        }
+      });
+    }
   }
 
   modifier(): void {

@@ -28,7 +28,7 @@ export class DataTable {
   @Input() columns: DataTableColumn[] = [];
   @Input() data: any[] = [];
   @Input() actions: DataTableAction[] = [];
-  @Input() loading = false;
+  @Input() isLoading = false;
   @Input() itemsPerPage = 10;
   @Input() showPagination = true;
   

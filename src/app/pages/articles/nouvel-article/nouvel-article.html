@@ -1,6 +1,8 @@
 <div class="col m-3">
   <div class="col-md-12 mb-3 mt-3">
-    <img src="product.png" alt="" class="rounded-circle" width="200px">
+    <label for="imageUpload" class="form-label">Image de l'article</label>
+    <input type="file" id="imageUpload" class="form-control mb-2" accept="image/*" (change)="onImageSelected($event)">
+    <img src="product.png" alt="Aperçu de l'article" class="rounded-circle" width="200px">
   </div>
   <br>
   <div class="col-md-12 mb-3">
@@ -17,32 +19,35 @@
       <form>
         <div class="row mb-3">
           <div class="col">
-            <input type="text" class="form-control" name="codearticle" placeholder="Code article" [(ngModel)]="articleRequestDto.codeArticle">
+            <label for="codearticle" class="form-label">Code Article</label>
+            <input type="text" id="codearticle" class="form-control" name="codearticle" placeholder="Code article" [(ngModel)]="articleRequestDto.codeArticle">
           </div>
           <div class="col">
-            <input type="text" class="form-control" name="designation" placeholder="Designation" [(ngModel)]="articleRequestDto.designation">
-
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col">
-            <input type="text" class="form-control" name="prixunitht"  placeholder="Prix unitaire" (input)="calculerTTC()" [(ngModel)]="articleRequestDto.prixUnitaire">
-          </div>
-          <div class="col">
-            <input type="text" class="form-control" name="tauxtva" placeholder="Taux tva" (input)="calculerTTC()" [(ngModel)]="articleRequestDto.tauxTva">
-
+            <label for="designation" class="form-label">Désignation</label>
+            <input type="text" id="designation" class="form-control" name="designation" placeholder="Designation" [(ngModel)]="articleRequestDto.designation">
           </div>
         </div>
         <div class="row mb-3">
           <div class="col">
-            <input type="text" class="form-control" name="prixunitttc" placeholder="Prix unitaire TTC" [(ngModel)]="articleRequestDto.prixUnitaireTtc">
+            <label for="prixunitht" class="form-label">Prix Unitaire HT</label>
+            <input type="number" id="prixunitht" class="form-control" name="prixunitht" placeholder="Prix unitaire" (input)="calculerTTC()" [(ngModel)]="articleRequestDto.prixUnitaire">
           </div>
           <div class="col">
-            <select class="form-control" name="cat" aria-label="Default select example" [(ngModel)]="categorieResponseDto.id">
-              <option >selectionner une catégorie</option>
+            <label for="tauxtva" class="form-label">Taux TVA (%)</label>
+            <input type="number" id="tauxtva" class="form-control" name="tauxtva" placeholder="Taux tva" (input)="calculerTTC()" [(ngModel)]="articleRequestDto.tauxTva">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <label for="prixunitttc" class="form-label">Prix Unitaire TTC</label>
+            <input type="number" id="prixunitttc" class="form-control" name="prixunitttc" placeholder="Prix unitaire TTC" [(ngModel)]="articleRequestDto.prixUnitaireTtc" readonly>
+          </div>
+          <div class="col">
+            <label for="categorie" class="form-label">Catégorie</label>
+            <select id="categorie" class="form-control" name="cat" aria-label="Sélectionner une catégorie" [(ngModel)]="articleRequestDto.categorieId">
+              <option value="" disabled>Sélectionner une catégorie</option>
               <option *ngFor="let cat of listeCategorie" [value]="cat.id">{{cat.code}} - {{cat.designation}}</option>
             </select>
-
           </div>
         </div>
 

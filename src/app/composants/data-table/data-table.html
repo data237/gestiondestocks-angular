@@ -1,12 +1,12 @@
 <div class="data-table-container">
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading-container">
+  <div *ngIf="isLoading" class="loading-container">
     <div class="spinner"></div>
     <p>Chargement des données...</p>
   </div>
 
   <!-- Data Table -->
-  <div *ngIf="!loading" class="table-wrapper">
+  <div *ngIf="!isLoading" class="table-wrapper">
     <table class="data-table">
       <thead>
         <tr>

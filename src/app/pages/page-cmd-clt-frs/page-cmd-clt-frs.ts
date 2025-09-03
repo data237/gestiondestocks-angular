@@ -4,13 +4,16 @@ import {BouttonAction} from "../../composants/boutton-action/boutton-action";
 import {Pagination} from "../../composants/pagination/pagination";
 import {ActivatedRoute, Router} from '@angular/router';
 import { CommandeClientResponseDto, CommandeFournisseurResponseDto } from '../../../gs-api/src';
+import { CommandeClientService } from '../../services/commande-client/commande-client';
+import { ModalConfirmation } from '../../composants/modal-confirmation/modal-confirmation';
 
 @Component({
   selector: 'app-page-cmd-clt-frs',
   imports: [
     CommonModule,
     BouttonAction,
-    Pagination
+    Pagination,
+    ModalConfirmation
   ],
   templateUrl: './page-cmd-clt-frs.html',
   styleUrl: './page-cmd-clt-frs.css'
@@ -23,8 +26,9 @@ export class PageCmdCltFrs implements OnInit {
   commandeToDelete: any = null;
   
   constructor(
-    private router: Router,
-    private activateRoute: ActivatedRoute
+    private readonly router: Router,
+    private readonly activateRoute: ActivatedRoute,
+    private readonly commandeClientService: CommandeClientService
   ) {}
 
   ngOnInit(): void{
@@ -35,19 +39,21 @@ export class PageCmdCltFrs implements OnInit {
   }
 
   loadCommandes(): void {
-    // TODO: Implement real data loading from service
-    this.commandes = [
-      {
-        id: 1,
-        code: 'CMD001',
-        dateCommande: '2024-01-15'
-      } as any,
-      {
-        id: 2,
-        code: 'CMD002', 
-        dateCommande: '2024-01-16'
-      } as any
-    ];
+    if (this.origin === 'client') {
+      this.commandeClientService.findAll()
+        .subscribe({
+          next: (commandes) => {
+            this.commandes = commandes;
+          },
+          error: (error) => {
+            this.errorMsg = 'Erreur lors du chargement des commandes';
+            console.error('Erreur:', error);
+          }
+        });
+    } else {
+      // TODO: Implement fournisseur service when available
+      this.commandes = [];
+    }
   }
 
   nouvelleCommande():void {
@@ -59,9 +65,12 @@ export class PageCmdCltFrs implements OnInit {
   }
 
   modifierCommande(commande: any): void {
-    // Navigate to edit command page with command ID
     if (commande.id) {
-      this.router.navigate(['nouvellecommande', commande.id]);
+      if (this.origin === 'client') {
+        this.router.navigate(['nouvellecommandeclt', commande.id]);
+      } else {
+        this.router.navigate(['nouvellecommandefrs', commande.id]);
+      }
     }
   }
 
@@ -71,27 +80,54 @@ export class PageCmdCltFrs implements OnInit {
   }
 
   confirmerSuppression(): void {
-    if (this.commandeToDelete) {
-      // TODO: Implement delete command logic with proper service call
-      console.log('Supprimer commande:', this.commandeToDelete);
-      // Example: this.commandeService.delete(this.commandeToDelete.id).subscribe(...)
-      this.showDeleteModal = false;
-      this.commandeToDelete = null;
+    if (this.commandeToDelete?.id) {
+      if (this.origin === 'client') {
+        this.commandeClientService.delete(this.commandeToDelete.id)
+          .subscribe({
+            next: () => {
+              this.loadCommandes();
+              this.fermerModal();
+            },
+            error: (error) => {
+              this.errorMsg = 'Erreur lors de la suppression';
+              this.fermerModal();
+              console.error('Erreur:', error);
+            }
+          });
+      } else {
+        // TODO: Implement fournisseur delete when service available
+        this.fermerModal();
+      }
     }
   }
 
-  annulerSuppression(): void {
+  fermerModal(): void {
     this.showDeleteModal = false;
     this.commandeToDelete = null;
   }
 
+  getDeleteMessage(): string {
+    return `Êtes-vous sûr de vouloir supprimer la commande "${this.commandeToDelete?.code || ''}" ?`;
+  }
+
   voirDetails(commande: CommandeClientResponseDto | CommandeFournisseurResponseDto): void {
-    console.log('Voir détails commande:', commande);
+    if (commande.id) {
+      if (this.origin === 'client') {
+        this.router.navigate(['/detailcommandeclient', commande.id]);
+      } else {
+        this.router.navigate(['/detailcommandefournisseur', commande.id]);
+      }
+    }
   }
 
   getTotalCommande(commande: CommandeClientResponseDto | CommandeFournisseurResponseDto): number {
-    // TODO: Calculate real total from ligne commandes
-    return Math.random() * 1000;
+    // Calculate total from ligne commandes if available
+    if ('ligneCommandeClients' in commande && commande.ligneCommandeClients) {
+      return commande.ligneCommandeClients.reduce((total, ligne) => {
+        return total + ((ligne.quantite || 0) * (ligne.prixUnitaire || 0));
+      }, 0);
+    }
+    return 0;
   }
 
   getTotalGeneral(): number {
@@ -100,13 +136,16 @@ export class PageCmdCltFrs implements OnInit {
 
   getClientFournisseurName(commande: any): string {
     if (this.origin === 'client') {
-      return 'Client Demo';
+      return commande.client ? `${commande.client.nom} ${commande.client.prenom}` : 'Client inconnu';
     } else {
-      return 'Fournisseur Demo';
+      return commande.fournisseur ? `${commande.fournisseur.nom} ${commande.fournisseur.prenom}` : 'Fournisseur inconnu';
     }
   }
 
   getNbArticles(commande: any): number {
-    return Math.floor(Math.random() * 5) + 1;
+    if ('ligneCommandeClients' in commande && commande.ligneCommandeClients) {
+      return commande.ligneCommandeClients.length;
+    }
+    return 0;
   }
 }

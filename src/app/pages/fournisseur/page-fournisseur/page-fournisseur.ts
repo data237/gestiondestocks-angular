@@ -92,6 +92,6 @@ export class PageFournisseur {
   }
 
   voirDetails(fournisseur: FournisseurResponseDto): void {
-    console.log('Voir détails fournisseur:', fournisseur);
+    this.router.navigate(['detailfournisseur', fournisseur.id]);
   }
 }

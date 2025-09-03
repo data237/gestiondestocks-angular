@@ -66,20 +66,9 @@
   </div>
 </div>
 
-<!-- Modal de confirmation de suppression -->
-<div class="modal-overlay" *ngIf="showDeleteModal" (click)="annulerSuppression()" (keydown.escape)="annulerSuppression()">
-  <div class="modal-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
-    <div class="modal-title">Confirmation</div>
-    <div class="modal-message">
-      Êtes-vous sûr de vouloir supprimer cette commande ?
-    </div>
-    <div class="modal-buttons">
-      <button class="modal-btn modal-btn-cancel" (click)="annulerSuppression()">
-        Annuler
-      </button>
-      <button class="modal-btn modal-btn-confirm" (click)="confirmerSuppression()">
-        OK
-      </button>
-    </div>
-  </div>
-</div>
+<app-modal-confirmation 
+  [isVisible]="showDeleteModal"
+  [message]="getDeleteMessage()"
+  (confirm)="confirmerSuppression()"
+  (cancel)="fermerModal()">
+</app-modal-confirmation>

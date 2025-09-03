@@ -12,15 +12,18 @@
 
       <div class="col-md-5 custom-border-right">
         <form>
-            <div class="form-group mb-1">
-              <input type="text" class="form-control" placeholder="Code commande" name="codecmd" [(ngModel)]="codeCommande" >
+            <div class="form-group mb-3">
+              <label for="codecmd" class="form-label"><strong>Code commande</strong></label>
+              <input type="text" class="form-control" id="codecmd" placeholder="Saisir le code de la commande" name="codecmd" [(ngModel)]="codeCommande" >
             </div>
-            <div class="form-group mb-1">
-              <input type="text" class="form-control" placeholder="Date commande">
+            <div class="form-group mb-3">
+              <label for="datecommande" class="form-label"><strong>Date commande</strong></label>
+              <input type="date" class="form-control" id="datecommande" placeholder="Date de la commande">
             </div>
-          <div class="form-group">
-            <select class="form-control" aria-label="Default select example" name="cltfrs" [(ngModel)]="selectedClientFournisseur">
-              <option selected>selectionner un {{ origin }}</option>
+          <div class="form-group mb-3">
+            <label for="cltfrs" class="form-label"><strong>{{ origin === 'client' ? 'Client' : 'Fournisseur' }}</strong></label>
+            <select class="form-control" id="cltfrs" aria-label="Default select example" name="cltfrs" [(ngModel)]="selectedClientFournisseur">
+              <option selected>Sélectionner un {{ origin }}</option>
               <option *ngFor="let obj of listClientsFournisseurs" [ngValue]="obj">
                 {{ obj.nom }}&nbsp;{{obj.prenom}}
               </option>
@@ -61,7 +64,8 @@
       <form >
         <div class="form-row row">
           <div class="col-md-3">
-            <input type="text" class="form-control" placeholder="Code article" name="codearticle" [(ngModel)]="codeArticle" (input)="searchArticle()">
+            <label for="codearticle" class="form-label"><strong>Code article</strong></label>
+            <input type="text" class="form-control" id="codearticle" placeholder="Rechercher un article" name="codearticle" [(ngModel)]="codeArticle" (input)="searchArticle()">
             <div *ngIf="codeArticle.length && !articleNotYetSelected" class="autocomplete shadow p-3 bg-white rounded">
               <p class="p-1" *ngFor="let article of listArticle"
                   (click)="selectArticle(article)"
@@ -71,13 +75,15 @@
             </div>
           </div>
           <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Quantité" name="quantite" [(ngModel)]="quantite">
+            <label for="quantite" class="form-label"><strong>Quantité</strong></label>
+            <input type="number" class="form-control" id="quantite" placeholder="Saisir la quantité" name="quantite" [(ngModel)]="quantite">
           </div>
           <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Prix unitaire" name="prixunitttc" [(ngModel)]="searchArticleDto.prixUnitaireTtc">
+            <label for="prixunitttc" class="form-label"><strong>Prix unitaire (€)</strong></label>
+            <input type="number" class="form-control" id="prixunitttc" placeholder="Prix unitaire TTC" name="prixunitttc" [(ngModel)]="searchArticleDto.prixUnitaireTtc">
           </div>
-          <div class="col-md-1">
-            <button type="button" class="btn btn-success" (click)="ajouterLigneCommande()">
+          <div class="col-md-1 d-flex align-items-end">
+            <button type="button" class="btn btn-success" (click)="ajouterLigneCommande()" title="Ajouter l'article">
               <i class="fas fa-plus"></i>
             </button>
           </div>
