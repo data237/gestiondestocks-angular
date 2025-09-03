@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UtilisateurResponseDto } from '../../../gs-api/src';
 import { UtilisateurService } from '../../services/utilisateur/utilisateur.service';
@@ -9,21 +10,59 @@ import { UtilisateurService } from '../../services/utilisateur/utilisateur.servi
   templateUrl: './detail-utilisateur.html',
   styleUrl: './detail-utilisateur.css'
 })
-export class DetailUtilisateur {
-  @Input() utilisateur!: UtilisateurResponseDto;
-  @Output() deleteEvent = new EventEmitter<void>();
+export class DetailUtilisateur implements OnInit {
+  
+  utilisateur: UtilisateurResponseDto | null = null;
+  isLoading = false;
+  errorMsg = '';
+  utilisateurId: number = 0;
 
-  constructor(private readonly utilisateurService: UtilisateurService) {}
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
+    private readonly utilisateurService: UtilisateurService
+  ) {}
 
-  deleteUtilisateur(): void {
-    if (this.utilisateur.id && confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-      this.utilisateurService.deleteUtilisateur(this.utilisateur.id).subscribe({
+  ngOnInit(): void {
+    const id = this.activatedRoute.snapshot.params['id'];
+    if (id) {
+      this.utilisateurId = +id;
+      this.loadUtilisateur();
+    }
+  }
+
+  loadUtilisateur(): void {
+    this.isLoading = true;
+    this.errorMsg = '';
+    
+    this.utilisateurService.getUtilisateurById(this.utilisateurId).subscribe({
+      next: (data: UtilisateurResponseDto) => {
+        this.utilisateur = data;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMsg = 'Erreur lors du chargement de l\'utilisateur: ' + (error.error?.message || error.message);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  retourALaListe(): void {
+    this.router.navigate(['utilisateurs']);
+  }
+
+  modifier(): void {
+    this.router.navigate(['nouvelutilisateur', this.utilisateurId]);
+  }
+
+  supprimer(): void {
+    if (confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur "${this.utilisateur?.nom} ${this.utilisateur?.prenom}" ?`)) {
+      this.utilisateurService.deleteUtilisateur(this.utilisateurId).subscribe({
         next: () => {
-          this.deleteEvent.emit();
+          this.router.navigate(['utilisateurs']);
         },
         error: (error) => {
-          console.error('Erreur lors de la suppression:', error);
-          alert('Erreur lors de la suppression de l\'utilisateur');
+          this.errorMsg = 'Erreur lors de la suppression: ' + (error.error?.message || error.message);
         }
       });
     }

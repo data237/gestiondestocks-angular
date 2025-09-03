@@ -32,6 +32,9 @@ import {DetailClient} from './pages/client/detail-client/detail-client';
 import {DetailCommandeClient} from './pages/commandes/detail-commande-client/detail-commande-client';
 import {DetailFournisseur} from './pages/fournisseur/detail-fournisseur/detail-fournisseur';
 import {DetailCommandeFournisseur} from './pages/commandes/detail-commande-fournisseur/detail-commande-fournisseur';
+import {DetailUtilisateur} from './composants/detail-utilisateur/detail-utilisateur';
+import {DetailRole} from './pages/roles/detail-role/detail-role';
+import {DetailEntreprise} from './pages/entreprises/detail-entreprise/detail-entreprise';
 export const routes: Routes = [
   {
     path: 'login',
@@ -286,6 +289,21 @@ export const routes: Routes = [
       {
         path: 'detailcommandefournisseur/:idCommandeFournisseur',
         component: DetailCommandeFournisseur,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'detailutilisateur/:id',
+        component: DetailUtilisateur,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'detailrole/:id',
+        component: DetailRole,
+        canActivate: [ApplicationGuard]
+      },
+      {
+        path: 'detailentreprise/:id',
+        component: DetailEntreprise,
         canActivate: [ApplicationGuard]
       },
       {

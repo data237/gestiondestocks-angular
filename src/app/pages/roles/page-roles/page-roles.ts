@@ -78,7 +78,7 @@ export class PageRoles implements OnInit {
   }
 
   confirmerSuppression(): void {
-    if (this.roleToDelete && this.roleToDelete.id) {
+    if (this.roleToDelete?.id) {
       this.deleteRole(this.roleToDelete.id);
     }
   }
@@ -96,6 +96,6 @@ export class PageRoles implements OnInit {
   }
 
   voirDetails(role: RolesResponseDto): void {
-    console.log('Voir détails rôle:', role);
+    this.router.navigate(['detailrole', role.id]);
   }
 }

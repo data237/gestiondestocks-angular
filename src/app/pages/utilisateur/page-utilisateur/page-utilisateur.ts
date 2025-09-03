@@ -100,6 +100,6 @@ export class PageUtilisateur implements OnInit {
   }
 
   voirDetails(utilisateur: UtilisateurResponseDto): void {
-    console.log('Voir détails utilisateur:', utilisateur);
+    this.router.navigate(['detailutilisateur', utilisateur.id]);
   }
 }
