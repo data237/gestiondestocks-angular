@@ -12,8 +12,8 @@ export class Article {
     private readonly baseUrl = 'http://localhost:8888/gestiondestock/api/v1/articles';
 
     constructor(
-      private userService: UserService,
-      private http: HttpClient
+      private readonly userService: UserService,
+      private readonly http: HttpClient
     ) {
     }
 
@@ -22,6 +22,7 @@ export class Article {
       // @ts-ignore
       articleRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.roles[0].entrepriseId
       
+      // Toujours utiliser FormData pour l'API article (image optionnelle)
       const formData = new FormData();
       formData.append('codeArticle', articleRequestDto.codeArticle || '');
       formData.append('designation', articleRequestDto.designation || '');
@@ -31,11 +32,11 @@ export class Article {
       formData.append('tauxTva', articleRequestDto.tauxTva?.toString() || '');
       formData.append('prixUnitaireTtc', articleRequestDto.prixUnitaireTtc?.toString() || '');
       
+      // Image optionnelle - ajouter seulement si fournie
       if (image) {
         formData.append('image', image);
       }
       
-      // Ne pas définir de headers pour multipart/form-data, le navigateur le fait automatiquement
       return this.http.post<ArticleResponseDto>(`${this.baseUrl}/create`, formData);
     }
 
@@ -65,6 +66,7 @@ export class Article {
     // @ts-ignore
     articleRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.roles[0].entrepriseId
     
+    // Toujours utiliser FormData pour l'API article (image optionnelle)
     const formData = new FormData();
     formData.append('codeArticle', articleRequestDto.codeArticle || '');
     formData.append('designation', articleRequestDto.designation || '');
@@ -74,6 +76,7 @@ export class Article {
     formData.append('tauxTva', articleRequestDto.tauxTva?.toString() || '');
     formData.append('prixUnitaireTtc', articleRequestDto.prixUnitaireTtc?.toString() || '');
     
+    // Image optionnelle - ajouter seulement si fournie
     if (image) {
       formData.append('image', image);
     }

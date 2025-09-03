@@ -23,8 +23,12 @@ export class Cltfrs {
   }
 
   enregistrerClient(clientRequestDto: ClientRequestDto, image?: File): Observable<ClientResponseDto>{
-    clientRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
+    // Utiliser l'entrepriseId du formulaire si fourni, sinon celui de l'utilisateur connecté
+    if (!clientRequestDto.entrepriseId) {
+      clientRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
+    }
     
+    // Utiliser FormData pour l'API client (image optionnelle)
     const formData = new FormData();
     formData.append('nom', clientRequestDto.nom || '');
     formData.append('prenom', clientRequestDto.prenom || '');
@@ -37,6 +41,7 @@ export class Cltfrs {
     formData.append('numTel', clientRequestDto.numTel || '');
     formData.append('entrepriseId', clientRequestDto.entrepriseId?.toString() || '');
     
+    // Image optionnelle - ajouter seulement si fournie
     if (image) {
       formData.append('image', image);
     }
@@ -45,8 +50,12 @@ export class Cltfrs {
   }
 
   enregistrerFournisseur(fournisseurRequestDto: FournisseurRequestDto, image?: File): Observable<FournisseurResponseDto>{
-    fournisseurRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
+    // Utiliser l'entrepriseId du formulaire si fourni, sinon celui de l'utilisateur connecté
+    if (!fournisseurRequestDto.entrepriseId) {
+      fournisseurRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
+    }
     
+    // Utiliser FormData pour l'API fournisseur (image optionnelle)
     const formData = new FormData();
     formData.append('nom', fournisseurRequestDto.nom || '');
     formData.append('prenom', fournisseurRequestDto.prenom || '');
@@ -59,6 +68,7 @@ export class Cltfrs {
     formData.append('numTel', fournisseurRequestDto.numTel || '');
     formData.append('entrepriseId', fournisseurRequestDto.entrepriseId?.toString() || '');
     
+    // Image optionnelle - ajouter seulement si fournie
     if (image) {
       formData.append('image', image);
     }
@@ -104,7 +114,10 @@ export class Cltfrs {
   }
 
   updateClient(idClient: number, clientRequestDto: ClientRequestDto, image?: File): Observable<ClientResponseDto>{
-    clientRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
+    // Utiliser l'entrepriseId du formulaire si fourni, sinon celui de l'utilisateur connecté
+    if (!clientRequestDto.entrepriseId) {
+      clientRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
+    }
     
     const formData = new FormData();
     formData.append('nom', clientRequestDto.nom || '');
@@ -118,6 +131,7 @@ export class Cltfrs {
     formData.append('numTel', clientRequestDto.numTel || '');
     formData.append('entrepriseId', clientRequestDto.entrepriseId?.toString() || '');
     
+    // Image optionnelle - ajouter seulement si fournie
     if (image) {
       formData.append('image', image);
     }
@@ -126,7 +140,10 @@ export class Cltfrs {
   }
 
   updateFournisseur(idFournisseur: number, fournisseurRequestDto: FournisseurRequestDto, image?: File): Observable<FournisseurResponseDto>{
-    fournisseurRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
+    // Utiliser l'entrepriseId du formulaire si fourni, sinon celui de l'utilisateur connecté
+    if (!fournisseurRequestDto.entrepriseId) {
+      fournisseurRequestDto.entrepriseId = <number>this.userService.getConnectedUser().user?.entrepriseId
+    }
     
     const formData = new FormData();
     formData.append('nom', fournisseurRequestDto.nom || '');
@@ -140,6 +157,7 @@ export class Cltfrs {
     formData.append('numTel', fournisseurRequestDto.numTel || '');
     formData.append('entrepriseId', fournisseurRequestDto.entrepriseId?.toString() || '');
     
+    // Image optionnelle - ajouter seulement si fournie
     if (image) {
       formData.append('image', image);
     }

@@ -20,12 +20,21 @@ export class Intercepter implements HttpInterceptor{
         localStorage.getItem('connectedUser') as string
       )
 
+      // Ne pas définir Content-Type pour les requêtes FormData (multipart/form-data)
+      const isFormData = req.body instanceof FormData;
+      
+      const headers: any = {
+        Authorization: 'Bearer ' + authenticationResponse.token,
+        Accept: 'application/json'
+      };
+      
+      // Ajouter Content-Type seulement si ce n'est pas FormData
+      if (!isFormData) {
+        headers['Content-Type'] = 'application/json';
+      }
+
       const authReq = req.clone({
-        headers: new HttpHeaders({
-          Authorization: 'Bearer ' + authenticationResponse.token,
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        })
+        headers: new HttpHeaders(headers)
       })
       return this.handelRequest(authReq, next)
     }
