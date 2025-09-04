@@ -4,7 +4,7 @@ import {BouttonAction} from "../../composants/boutton-action/boutton-action";
 import {Pagination} from "../../composants/pagination/pagination";
 import {ActivatedRoute, Router} from '@angular/router';
 import { CommandeClientResponseDto, CommandeFournisseurResponseDto } from '../../../gs-api/src';
-import { CommandeClientService } from '../../services/commande-client/commande-client';
+import { Cmdcltfrs } from '../../services/cmdcltfrs/cmdcltfrs';
 import { ModalConfirmation } from '../../composants/modal-confirmation/modal-confirmation';
 
 @Component({
@@ -28,7 +28,7 @@ export class PageCmdCltFrs implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly activateRoute: ActivatedRoute,
-    private readonly commandeClientService: CommandeClientService
+    private readonly cmdService: Cmdcltfrs
   ) {}
 
   ngOnInit(): void{
@@ -40,19 +40,27 @@ export class PageCmdCltFrs implements OnInit {
 
   loadCommandes(): void {
     if (this.origin === 'client') {
-      this.commandeClientService.findAll()
+      this.cmdService.findAllCommandesClient()
         .subscribe({
-          next: (commandes) => {
+          next: (commandes: any) => {
             this.commandes = commandes;
           },
-          error: (error) => {
+          error: (error: any) => {
             this.errorMsg = 'Erreur lors du chargement des commandes';
             console.error('Erreur:', error);
           }
         });
     } else {
-      // TODO: Implement fournisseur service when available
-      this.commandes = [];
+      this.cmdService.findAllCommandesFournisseur()
+        .subscribe({
+          next: (commandes: any) => {
+            this.commandes = commandes;
+          },
+          error: (error: any) => {
+            this.errorMsg = 'Erreur lors du chargement des commandes';
+            console.error('Erreur:', error);
+          }
+        });
     }
   }
 
@@ -82,21 +90,31 @@ export class PageCmdCltFrs implements OnInit {
   confirmerSuppression(): void {
     if (this.commandeToDelete?.id) {
       if (this.origin === 'client') {
-        this.commandeClientService.delete(this.commandeToDelete.id)
+        this.cmdService.deleteCommandeClient(this.commandeToDelete.id)
           .subscribe({
             next: () => {
               this.loadCommandes();
               this.fermerModal();
             },
-            error: (error) => {
+            error: (error: any) => {
               this.errorMsg = 'Erreur lors de la suppression';
               this.fermerModal();
               console.error('Erreur:', error);
             }
           });
       } else {
-        // TODO: Implement fournisseur delete when service available
-        this.fermerModal();
+        this.cmdService.deleteCommandeFournisseur(this.commandeToDelete.id)
+          .subscribe({
+            next: () => {
+              this.loadCommandes();
+              this.fermerModal();
+            },
+            error: (error: any) => {
+              this.errorMsg = 'Erreur lors de la suppression';
+              this.fermerModal();
+              console.error('Erreur:', error);
+            }
+          });
       }
     }
   }

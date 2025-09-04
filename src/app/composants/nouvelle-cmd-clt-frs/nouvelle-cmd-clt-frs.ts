@@ -69,7 +69,21 @@ export class NouvelleCmdCltFrs {
   }
 
   cancel() {
-    this.router.navigate(['commandesfournisseur'])
+    if (this.origin === 'client') {
+      this.router.navigate(['commandesclient']);
+    } else {
+      this.router.navigate(['commandesfournisseur']);
+    }
+  }
+
+  isEditMode(): boolean {
+    return !!this.activateRoute.snapshot.paramMap.get('id');
+  }
+
+  getPageTitle(): string {
+    const action = this.isEditMode() ? 'Modifier' : 'Nouvelle';
+    const entity = this.origin === 'client' ? 'commande client' : 'commande fournisseur';
+    return `${action} ${entity}`;
   }
 
   findAll(){
@@ -164,31 +178,73 @@ export class NouvelleCmdCltFrs {
   }
 
   enregistrerCommande(): void {
-    const commande = this.preparerCommande()
-    // const commandrequest = {
-    //   code: commande.codeCommande,
-    //   dateCommande: commande.dateCommande,
-    //   clientId: commande.client.clientId,
-    //   entrepriseId: 0
-    // }
+    // Validation avant envoi
+    if (!this.selectedClientFournisseur?.id) {
+      this.errorMsg = [`Veuillez sélectionner un ${this.origin === 'client' ? 'client' : 'fournisseur'}`];
+      return;
+    }
+
+    if (!this.codeCommande || this.codeCommande.trim() === '') {
+      this.errorMsg = ['Le code de commande est obligatoire'];
+      return;
+    }
+
+    if (this.lignesCommande.length === 0) {
+      this.errorMsg = ['Veuillez ajouter au moins un article à la commande'];
+      return;
+    }
+
+    const commande = this.preparerCommande();
+    const id = this.activateRoute.snapshot.paramMap.get('id');
+    
     if(this.origin==='client'){
+      if (id) {
+        // Modification d'une commande client existante
+        this.cmdCltFrsService.updateCommandeClient(parseInt(id, 10), commande as CommandeClientRequestDto)
+          .subscribe({
+            next: (cmd)=>{
+              this.router.navigate(['commandesclient'])
+            }, error:(error)=>{
+              console.error('Erreur lors de la modification de la commande client:', error);
+              this.errorMsg = error.error?.errors || [error.error?.message || 'Erreur lors de la modification de la commande'];
+            }
+          })
+      } else {
+        // Création d'une nouvelle commande client
         this.cmdCltFrsService.enregistrerCommandeClient(commande as CommandeClientRequestDto)
           .subscribe({
             next: (cmd)=>{
               this.router.navigate(['commandesclient'])
             }, error:(error)=>{
-              this.errorMsg = error.error.errors
+              console.error('Erreur lors de la création de la commande client:', error);
+              this.errorMsg = error.error?.errors || [error.error?.message || 'Erreur lors de la création de la commande'];
             }
           })
+      }
     }else if(this.origin==='fournisseur'){
-      this.cmdCltFrsService.enregistrerCommandeFournisseur(commande as CommandeFournisseurRequestDto)
-        .subscribe({
-          next: (cmd)=>{
-            this.router.navigate(['commandesfournisseur'])
-          }, error:(error)=>{
-            this.errorMsg = error.error.errors
-          }
-        })
+      if (id) {
+        // Modification d'une commande fournisseur existante
+        this.cmdCltFrsService.updateCommandeFournisseur(parseInt(id, 10), commande as CommandeFournisseurRequestDto)
+          .subscribe({
+            next: (cmd)=>{
+              this.router.navigate(['commandesfournisseur'])
+            }, error:(error)=>{
+              console.error('Erreur lors de la modification de la commande fournisseur:', error);
+              this.errorMsg = error.error?.errors || [error.error?.message || 'Erreur lors de la modification de la commande'];
+            }
+          })
+      } else {
+        // Création d'une nouvelle commande fournisseur
+        this.cmdCltFrsService.enregistrerCommandeFournisseur(commande as CommandeFournisseurRequestDto)
+          .subscribe({
+            next: (cmd)=>{
+              this.router.navigate(['commandesfournisseur'])
+            }, error:(error)=>{
+              console.error('Erreur lors de la création de la commande fournisseur:', error);
+              this.errorMsg = error.error?.errors || [error.error?.message || 'Erreur lors de la création de la commande'];
+            }
+          })
+      }
     }
   }
 
@@ -198,13 +254,27 @@ export class NouvelleCmdCltFrs {
         .subscribe({
           next: (commande: any) => {
             this.codeCommande = commande.code || '';
-            // Find and set the selected client
-            this.selectedClientFournisseur = { id: commande.clientId };
+            this.selectedClientFournisseur = commande.client || { id: commande.clientId };
             this.lignesCommande = commande.ligneCommandeClients || [];
             this.calculateTotal();
           },
           error: (error: any) => {
-            console.error('Erreur lors du chargement de la commande:', error);
+            console.error('Erreur lors du chargement de la commande client:', error);
+            this.errorMsg = ['Erreur lors du chargement de la commande'];
+          }
+        });
+    } else if (this.origin === 'fournisseur') {
+      this.cmdCltFrsService.findAllLigneCommandesFournisseur(commandeId)
+        .subscribe({
+          next: (commande: any) => {
+            this.codeCommande = commande.code || '';
+            this.selectedClientFournisseur = commande.fournisseur || { id: commande.fournisseurId };
+            this.lignesCommande = commande.ligneCommandeFournisseurs || [];
+            this.calculateTotal();
+          },
+          error: (error: any) => {
+            console.error('Erreur lors du chargement de la commande fournisseur:', error);
+            this.errorMsg = ['Erreur lors du chargement de la commande'];
           }
         });
     }
@@ -217,6 +287,17 @@ export class NouvelleCmdCltFrs {
         this.totalCommande += +ligne.prixUnitaire * +ligne.quantite;
       }
     });
+  }
+
+  supprimerLigneCommande(ligne: LigneCommandeClientResponseDto): void {
+    const index = this.lignesCommande.findIndex(l => 
+      l.article?.codeArticle === ligne.article?.codeArticle
+    );
+    
+    if (index > -1) {
+      this.lignesCommande.splice(index, 1);
+      this.calculateTotal();
+    }
   }
 
   private preparerCommande(): any{

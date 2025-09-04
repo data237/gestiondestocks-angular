@@ -69,6 +69,6 @@
 <app-modal-confirmation 
   [isVisible]="showDeleteModal"
   [message]="getDeleteMessage()"
-  (confirm)="confirmerSuppression()"
-  (cancel)="fermerModal()">
+  (confirmed)="confirmerSuppression()"
+  (cancelled)="fermerModal()">
 </app-modal-confirmation>

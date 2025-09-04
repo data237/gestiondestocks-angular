@@ -52,4 +52,22 @@ export class Cmdcltfrs {
     }
     return of();
   }
+
+  updateCommandeClient(id: number, commandeClientDto: CommandeClientRequestDto): Observable<CommandeClientResponseDto> {
+    commandeClientDto.entrepriseId = this.userService.getConnectedUser().user?.entrepriseId;
+    return this.commandeClientService.update7(id, commandeClientDto);
+  }
+
+  updateCommandeFournisseur(id: number, commandeFournisseurDto: CommandeFournisseurRequestDto): Observable<CommandeFournisseurResponseDto> {
+    commandeFournisseurDto.entrepriseId = this.userService.getConnectedUser().user?.entrepriseId;
+    return this.commandeFournisseurService.update6(id, commandeFournisseurDto);
+  }
+
+  deleteCommandeClient(id: number): Observable<any> {
+    return this.commandeClientService.delete7(id);
+  }
+
+  deleteCommandeFournisseur(id: number): Observable<any> {
+    return this.commandeFournisseurService.delete6(id);
+  }
 }
