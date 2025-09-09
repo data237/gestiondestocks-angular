@@ -12,7 +12,7 @@ import { RolesResponseDto } from '../../../../gs-api/src';
 })
 export class DetailRole implements OnInit {
   
-  role: RolesResponseDto | null = null;
+  role: any = null;
   isLoading = false;
   errorMsg = '';
   roleId: number = 0;

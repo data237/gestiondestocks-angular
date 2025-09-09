@@ -304,14 +304,14 @@ export class NouvelleCmdCltFrs {
     if(this.origin === 'client'){
       return {
         code: this.codeCommande,
-        dateCommande: new Date().toISOString().split('T')[0], // Format YYYY-MM-DD
+        dateCommande: new Date().toISOString(), // Format ISO complet
         clientId: this.selectedClientFournisseur.id,
         entrepriseId: 1 // Will be set by service
       }
     } else if(this.origin === 'fournisseur'){
       return {
         code: this.codeCommande,
-        dateCommande: new Date().toISOString().split('T')[0], // Format YYYY-MM-DD
+        dateCommande: new Date().toISOString(), // Format ISO complet
         fournisseurId: this.selectedClientFournisseur.id,
         entrepriseId: 1 // Will be set by service
       }

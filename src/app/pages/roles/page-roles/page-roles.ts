@@ -57,8 +57,11 @@ export class PageRoles implements OnInit {
   deleteRole(id: number): void {
     this.rolesService.deleteRole(id).subscribe({
       next: () => {
-        this.loadRoles();
+        // Supprimer immédiatement de la liste locale pour un feedback instantané
+        this.roles = this.roles.filter(role => role.id !== id);
         this.fermerModal();
+        // Recharger la liste pour s'assurer de la synchronisation
+        this.loadRoles();
       },
       error: (error) => {
         console.error('Erreur lors de la suppression:', error);

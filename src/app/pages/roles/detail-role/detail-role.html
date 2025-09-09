@@ -41,6 +41,21 @@
             <span class="detail-label">Nom du rôle :</span>
             <span class="detail-value">{{ role.roleName }}</span>
           </div>
+          <div class="detail-row">
+            <span class="detail-label">Utilisateur :</span>
+            <span class="detail-value">
+              <span *ngIf="role?.utilisateurNom && role?.utilisateurPrenom">
+                {{ role.utilisateurNom }} {{ role.utilisateurPrenom }}
+              </span>
+              <span *ngIf="!role?.utilisateurNom || !role?.utilisateurPrenom">
+                Non défini
+              </span>
+            </span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">ID Entreprise :</span>
+            <span class="detail-value">{{ role.entrepriseId || 'Non défini' }}</span>
+          </div>
         </div>
       </div>
     </div>

@@ -27,7 +27,7 @@ export class Cmdcltfrs {
   }
 
   enregistrerCommandeFournisseur(commandeFournisseurDto: CommandeFournisseurRequestDto): Observable<CommandeFournisseurRequestDto> {
-    commandeFournisseurDto.fournisseurId = this.userService.getConnectedUser().user?.entrepriseId;
+    commandeFournisseurDto.entrepriseId = this.userService.getConnectedUser().user?.entrepriseId;
     return this.commandeFournisseurService.save6(commandeFournisseurDto);
   }
 

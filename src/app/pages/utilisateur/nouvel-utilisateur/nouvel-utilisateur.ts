@@ -135,12 +135,15 @@ export class NouvelUtilisateur implements OnInit {
   updateUtilisateur(): void {
     if (!this.utilisateurId) return;
     
+    // Don't send password if it's empty in edit mode
+    const passwordToSend = this.utilisateur.motDePasse || '';
+    
     this.utilisateurService.updateUtilisateur(
       this.utilisateurId,
       this.utilisateur.nom,
       this.utilisateur.prenom,
       this.utilisateur.email,
-      this.utilisateur.motDePasse,
+      passwordToSend,
       this.utilisateur.dateDeNaissance,
       this.utilisateur.adresse1,
       this.utilisateur.ville,

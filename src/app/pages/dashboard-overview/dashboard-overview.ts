@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { DashboardService, DashboardStats } from '../../services/dashboard/dashboard.service';
 
 @Component({
   selector: 'app-dashboard-overview',
@@ -9,13 +10,15 @@ import { RouterModule } from '@angular/router';
   templateUrl: './dashboard-overview.html',
   styleUrls: ['./dashboard-overview.css']
 })
-export class DashboardOverview {
+export class DashboardOverview implements OnInit {
   
   // Dashboard statistics
-  totalProducts = 245;
-  totalClients = 89;
-  totalSuppliers = 34;
-  totalOrders = 156;
+  totalProducts = 0;
+  totalClients = 0;
+  totalSuppliers = 0;
+  totalOrders = 0;
+  isLoading = true;
+  errorMessage = '';
   
   // Recent activities
   recentActivities = [
@@ -34,11 +37,51 @@ export class DashboardOverview {
   };
   
   // Low stock alerts
-  lowStockItems = [
-    { name: 'Clavier mécanique', stock: 5, minStock: 10 },
-    { name: 'Écran 24 pouces', stock: 3, minStock: 8 },
-    { name: 'Câble USB-C', stock: 7, minStock: 15 }
-  ];
+  lowStockItems: any[] = [];
 
-  constructor() {}
+  constructor(private dashboardService: DashboardService) {}
+
+  ngOnInit(): void {
+    this.loadDashboardData();
+  }
+
+  loadDashboardData(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.dashboardService.getDashboardStats().subscribe({
+      next: (stats: DashboardStats) => {
+        this.totalProducts = stats.totalProducts;
+        this.totalClients = stats.totalClients;
+        this.totalSuppliers = stats.totalSuppliers;
+        this.totalOrders = stats.totalOrders;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des statistiques:', error);
+        this.errorMessage = 'Erreur lors du chargement des données du tableau de bord';
+        this.isLoading = false;
+      }
+    });
+
+    // Charger les activités récentes
+    this.dashboardService.getRecentActivities().subscribe({
+      next: (activities) => {
+        this.recentActivities = activities;
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des activités:', error);
+      }
+    });
+
+    // Charger les articles en stock faible
+    this.dashboardService.getLowStockItems().subscribe({
+      next: (items) => {
+        this.lowStockItems = items;
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des stocks faibles:', error);
+      }
+    });
+  }
 }
